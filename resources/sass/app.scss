@@ -1,0 +1,22 @@
+// Fonts
+@import url('https://fonts.bunny.net/css?family=Nunito');
+
+// Variables
+@import 'variables';
+@import 'mixins';
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+@import 'react-toastify/dist/ReactToastify.css';
+
+@import './notfound.scss';
+@import './auth.scss';
+@import './profile.scss';
+@import './cardcustom.scss';
+@import "./response.scss";
+.form_group{
+    margin: 10px;
+}
+.icon_end{
+    cursor: pointer;
+}

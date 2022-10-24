@@ -1,0 +1,126 @@
+version: '3'
+
+services:
+    nginx:
+        image: 'nginx:latest'
+        container_name: nginx
+        ports:
+            - "8080:${APP_PORT}"
+        volumes:
+            - docker/nginx:/var/www/
+            - docker/nginx/conf.d/:/etc/nginx/conf.d/
+        networks:
+            - app-network
+        depends_on:
+            - app
+    app:
+        build:
+            context: ./
+            dockerfile: docker/php/Dockerfile
+            args:
+                user: min
+                uid: 1000
+        restart: unless-stopped
+        container_name: app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www/
+            - docker/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+        ports:
+            - "9000:9000"
+        networks:
+            - app-network
+        depends_on:
+            - mysql
+            - redis
+            - phpmyadmin
+            - memcached
+    mysql:
+        image: 'mysql:latest'
+        container_name: mysql
+        hostname: mysql
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${DB_PORT}:${DB_PORT_FORWARD}'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: "%"
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - 'data-mysql:/var/lib/mysql'
+            - 'docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf'
+        networks:
+            - app-network
+        # command:
+        #     --default-authentication-plugin=mysql_native_password
+        #     --max_connections=666
+        #     --bind-address=0.0.0.0
+        #     --transaction-isolation=READ-COMMITTED
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
+            retries: 3
+            timeout: 5s
+    phpmyadmin:
+        image: phpmyadmin:latest
+        container_name: phpmyadmin
+        links:
+            - mysql:mysql
+        ports:
+            - "8081:80"
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        environment:
+            PMA_HOSTS: mysql:${DB_PORT_FORWARD}
+            PMA_PORT: 3008,3007,3006
+            PMA_USER: 'root'
+            PMA_PASSWORD: '${DB_PASSWORD}'
+            PMA_ARBITRARY: 1
+        networks:
+            - app-network
+        depends_on:
+            - mysql
+    redis:
+        image: 'redis:latest'
+        container_name: redis
+        restart: unless-stopped
+        hostname: redis
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        build:
+            context: ./
+            dockerfile: docker/redis/Dockerfile
+        ports:
+            - '6380:6380'
+        volumes:
+            - 'data-redis:/data'
+        networks:
+            - app-network
+        environment:
+            REDIS_HOST: '${REDIS_HOST}'
+            REDIS_PASSWORD: '${REDIS_PASSWORD}'
+            REDIS_PORT: '${REDIS_PORT}'
+        # command: redis-server --requirepass "${REDIS_PASSWORD}"
+        # healthcheck:
+        #     test: [ "CMD", "redis-cli", "ping", "-p${REDIS_PASSWORD}" ]
+        #     retries: 3
+        #     timeout: 5s
+    memcached:
+        image: 'memcached:latest'
+        container_name: memcached
+        ports:
+            - '11211:11211'
+networks:
+    app-network:
+        driver: bridge
+        name: app-network
+volumes:
+    data-mysql:
+        driver: local
+    data-redis:
+        driver: local

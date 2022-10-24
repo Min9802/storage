@@ -1,0 +1,54 @@
+.wrrap404 {
+    width: 100%;
+    min-height: 100vh;
+    text-align: center;
+    z-index: 0;
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    justify-content: center;
+}
+.wrrap404.mobile{
+    max-height: 500;
+}
+.wrrap404 .top_text {
+    min-height: 40%;
+    backdrop-filter: blur(5px);
+    padding-top: 30%;
+    padding-bottom: 30%;
+    margin: auto;
+    text-align: center;
+    text-shadow: -1px -1px 1px #000, 1px 1px 1px #000;
+}
+.wrrap404 .top_text.mobile {
+    min-height: 40%;
+    backdrop-filter: blur(5px);
+    padding: auto 10 auto 10;
+}
+
+.wrrap404 .bg_text {
+    font-size: 30em;
+    color: #999999;
+    position: absolute;
+    padding: auto;
+    z-index: -1;
+    overflow-x: hidden;
+    text-shadow: -1px -1px 1px #999999, 1px 1px 1px #000;
+
+}
+.wrrap404 .bg_text .number404 {
+    font-size: 500%;
+    z-index: 2;
+    font-weight: bold;
+    padding: 70;
+    text-shadow: -1px -1px 1px #000, 1px 1px 1px #000;
+    position: relative;
+}
+.wrrap404 .bg_text.mobile{
+    font-size: 13em;
+}

@@ -1,0 +1,29 @@
+.wrapper_profile{
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 1em;
+}
+.profile {
+
+    position: relative;
+    float: none;
+    margin: auto;
+}
+.profile_left{
+    display: block;
+    margin: auto;
+    text-align:center;
+}
+.info{
+    border-left: 1px solid gray;
+    margin: auto;
+}
+.email{
+    border-bottom: 1px solid gray;
+}
+.avatar{
+     height: 100px;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
