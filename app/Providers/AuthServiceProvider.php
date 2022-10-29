@@ -45,6 +45,7 @@ class AuthServiceProvider extends ServiceProvider
         Passport::refreshTokensExpireIn(Carbon::now()->addYear(1));
 
         Passport::ignoreCsrfToken(true);
+        Passport::cookie('access_token');
         Passport::tokensCan([
             'storage' => 'storage service',
         ]);

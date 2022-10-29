@@ -54,8 +54,7 @@
                                     "message": "res.upload.success",
                                     "file": {
                                         "id": 1,
-                                        "name": "image400x700.png",
-                                        "file_name": "jx3m8NPBgy.png",
+                                        "name": "jx3m8NPBgy.png",
                                         "type": "image",
                                         "path": "public/image/jx3m8NPBgy.png",
                                         "status": 0,
@@ -144,8 +143,7 @@
                                     "message": "res.update.success",
                                     "file": {
                                         "id": 1,
-                                        "name": "image400x700.png",
-                                        "file_name": "jx3m8NPBgy.png",
+                                        "name": "jx3m8NPBgy.png",
                                         "type": "image",
                                         "path": "public/image/jx3m8NPBgy.png",
                                         "status": 0,
@@ -241,8 +239,7 @@
                                 },
                                 "example": {
                                     "id": 1,
-                                    "name": "image400x700.png",
-                                    "file_name": "jx3m8NPBgy.png",
+                                    "name": "jx3m8NPBgy.png",
                                     "type": "image",
                                     "path": "public/image/jx3m8NPBgy.png",
                                     "status": 0,
@@ -305,8 +302,7 @@
                                 "example": [
                                     {
                                         "id": 1,
-                                        "name": "image400x700.png",
-                                        "file_name": "jx3m8NPBgy.png",
+                                        "name": "jx3m8NPBgy.png",
                                         "type": "image",
                                         "path": "public/image/jx3m8NPBgy.png",
                                         "status": 0,
@@ -321,8 +317,7 @@
                                     },
                                     {
                                         "id": 2,
-                                        "name": "image2_400x700.png",
-                                        "file_name": "jx3m8NPBgy.png",
+                                        "name": "jx3m8NPBgy.png",
                                         "type": "image",
                                         "path": "public/image/jx3m8NPBgy.png",
                                         "status": 0,
@@ -493,8 +488,7 @@
                                 "example": [
                                     {
                                         "id": 1,
-                                        "name": "image400x700.png",
-                                        "file_name": "jx3m8NPBgy.png",
+                                        "name": "jx3m8NPBgy.png",
                                         "type": "image",
                                         "path": "public/image/jx3m8NPBgy.png",
                                         "status": 0,
@@ -508,8 +502,7 @@
                                     },
                                     {
                                         "id": 2,
-                                        "name": "image2_400x700.png",
-                                        "file_name": "jx3m8NPBgy.png",
+                                        "name": "jx3m8NPBgy.png",
                                         "type": "image",
                                         "path": "public/image/jx3m8NPBgy.png",
                                         "status": 0,
@@ -774,9 +767,9 @@
                 "scheme": "https",
                 "flows": {
                     "password": {
-                        "authorizationUrl": "https://storage.min-services.com//api/oauth/authorize",
-                        "tokenUrl": "https://storage.min-services.com//api/oauth/token",
-                        "refreshUrl": "https://storage.min-services.com//api/token/refresh",
+                        "authorizationUrl": "http://127.0.0.1:8001/api/oauth/authorize",
+                        "tokenUrl": "http://127.0.0.1:8001/api/oauth/token",
+                        "refreshUrl": "http://127.0.0.1:8001/api/token/refresh",
                         "scopes": []
                     }
                 }
