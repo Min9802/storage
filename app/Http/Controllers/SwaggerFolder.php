@@ -25,7 +25,7 @@ class SwaggerFolder extends Controller
      *     },
      *     example={
      *          "message": "Get data success",
-     *          "folders": {
+     *          "content": {
      *              "image",
      *              "audio"
      *          }
@@ -182,13 +182,13 @@ class SwaggerFolder extends Controller
      *      @OA\Schema(
      *          type="object",
      *          @OA\Property(
-     *              description="name folder",
+     *              description="folder name",
      *              property="name",
      *              type="string",
      *              example="image"
      *          ),
      *          @OA\Property(
-     *              description="name folder",
+     *              description="new folder name",
      *              property="newname",
      *              type="string",
      *              example="images"
@@ -252,7 +252,7 @@ class SwaggerFolder extends Controller
      *      @OA\Schema(
      *          type="object",
      *          @OA\Property(
-     *              description="name folder",
+     *              description="folder name",
      *              property="name",
      *              type="string",
      *              example="image"
@@ -269,7 +269,7 @@ class SwaggerFolder extends Controller
      *          type="object",
      *          example={
      *              "message": "get data success",
-     *              "files": {
+     *              "content": {
      *                       {
      *                          "id": 3,
      *                          "name": "redis.png",
@@ -334,7 +334,7 @@ class SwaggerFolder extends Controller
      *      @OA\Schema(
      *          type="object",
      *          @OA\Property(
-     *              description="name folder",
+     *              description="folder name",
      *              property="name",
      *              type="string",
      *              example="image"

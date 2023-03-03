@@ -568,7 +568,7 @@ class FileManagerController extends Controller
             }
             return response()->json([
                 "message" => trans('res.getdata.success'),
-                "folders" => $folders,
+                "content" => $folders,
             ]);
         } catch (Exception $e) {
             Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
@@ -636,7 +636,7 @@ class FileManagerController extends Controller
                 $folder = Storage::disk('public')->createDirectory($username . "/" . $folderName);
                 return response()->json([
                     'message' => trans('res.add.success'),
-                    'folder' => $folderName,
+                    'content' => $folderName,
                 ]);
             }
         } catch (Exception $e) {
@@ -721,7 +721,7 @@ class FileManagerController extends Controller
             } else {
                 return response()->json([
                     'message' => trans('res.getdata.success'),
-                    'files' => $folderExist,
+                    'content' => $folderExist,
                 ]);
             }
         } catch (Exception $e) {

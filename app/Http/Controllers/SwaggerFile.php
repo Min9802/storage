@@ -26,51 +26,28 @@ class SwaggerFile extends Controller
      *     oneOf={
      *         @OA\Schema(ref="#/components/schemas/FileSystem"),
      *     },
-     *     example={
+     *       example=
      *           {
-     *               "id": 1,
-     *               "name":
-     *               "image400x700.png",
-     *               "name":
-     *               "jx3m8NPBgy.png",
-     *               "type": "image",
-     *               "path": "public/image/jx3m8NPBgy.png",
-     *               "status": 0,
-     *               "created_at": "2022-09-29T17:03:15.000000Z",
-     *               "updated_at": "2022-09-29T17:13:16.000000Z",
-     *               "deleted_at": null,
-     *               "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
-     *               "pivot": {
-     *                   "user_id": 1,
-     *                   "file_id": 1
-     *               }
-     *           },
-     *           {
-     *               "id": 2,
-     *               "name":
-     *               "image2_400x700.png",
-     *               "name":
-     *               "jx3m8NPBgy.png",
-     *               "type": "image",
-     *               "path": "public/image/jx3m8NPBgy.png",
-     *               "status": 0,
-     *               "created_at": "2022-09-29T17:03:15.000000Z",
-     *               "updated_at": "2022-09-29T17:13:16.000000Z",
-     *               "deleted_at": null,
-     *               "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
-     *                "pivot": {
-     *                   "user_id": 1,
-     *                   "file_id": 2
-     *               }
+     *             "message":"get data success",
+     *              "content":{
+     *                  "id": 1,
+     *                  "name": "image400x700.png",
+     *                  "type": "image/png",
+     *                  "path": "public/image/jx3m8NPBgy.png",
+     *                  "status": 0,
+     *                  "created_at": "2022-09-29T17:03:15.000000Z",
+     *                  "updated_at": "2022-09-29T17:13:16.000000Z",
+     *                  "deleted_at": null,
+     *                  "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
+     *              }
      *           }
-     *       }
      *   ),
      * ),
      * @OA\Response(
      *    response=500,
      *    description="Wrong",
      *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="getdata fail")
+     *       @OA\Property(property="message", type="string", example="get data fail")
      *        )
      *     )
      * )
@@ -92,20 +69,6 @@ class SwaggerFile extends Controller
      * operationId="get file",
      *  tags={"Storage Api file"},
      * security={ {"passport": {} }},
-     * @OA\RequestBody(
-     *      @OA\MediaType(
-     *      mediaType="multipart/form-data",
-     *      @OA\Schema(
-     *          type="object",
-     *          @OA\Property(
-     *              description="file path to save",
-     *              property="path",
-     *              type="string",
-     *              example="Admin/image/redis.png"
-     *          ),
-     *     )
-     *   )
-     * ),
      * @OA\Response(
      *    response=200,
      *    description="Success",
@@ -115,22 +78,18 @@ class SwaggerFile extends Controller
      *     },
      *       example=
      *           {
-     *               "id": 1,
-     *               "name":
-     *               "image400x700.png",
-     *               "name":
-     *               "jx3m8NPBgy.png",
-     *               "type": "image",
-     *               "path": "public/image/jx3m8NPBgy.png",
-     *               "status": 0,
-     *               "created_at": "2022-09-29T17:03:15.000000Z",
-     *               "updated_at": "2022-09-29T17:13:16.000000Z",
-     *               "deleted_at": null,
-     *               "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
-     *               "pivot": {
-     *                   "user_id": 1,
-     *                   "file_id": 1
-     *               }
+     *             "message":"get data success",
+     *              "content":{
+     *                  "id": 1,
+     *                  "name":"jx3m8NPBgy.png",
+     *                  "type": "image/png",
+     *                  "path": "public/image/jx3m8NPBgy.png",
+     *                  "status": 0,
+     *                  "created_at": "2022-09-29T17:03:15.000000Z",
+     *                  "updated_at": "2022-09-29T17:13:16.000000Z",
+     *                  "deleted_at": null,
+     *                  "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
+     *              }
      *           }
      *    )
      * ),
@@ -190,22 +149,18 @@ class SwaggerFile extends Controller
      *     },
      *       example=
      *           {
-     *               "message": "upload success",
-     *               "file":{
+     *             "message":"upload success",
+     *              "content":{
      *                  "id": 1,
-     *                  "name":
-     *                  "image400x700.png",
-     *                  "name":
-     *                  "jx3m8NPBgy.png",
-     *                  "type": "image",
+     *                  "name": "image400x700.png",
+     *                  "type": "image/png",
      *                  "path": "public/image/jx3m8NPBgy.png",
      *                  "status": 0,
      *                  "created_at": "2022-09-29T17:03:15.000000Z",
      *                  "updated_at": "2022-09-29T17:13:16.000000Z",
      *                  "deleted_at": null,
      *                  "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
-     *               }
-
+     *              }
      *           }
      *    )
      * ),
@@ -267,13 +222,10 @@ class SwaggerFile extends Controller
      *       example=
      *           {
      *             "message":"update success",
-     *              "file":{
+     *              "content":{
      *                  "id": 1,
-     *                  "name":
-     *                  "image400x700.png",
-     *                  "name":
-     *                  "jx3m8NPBgy.png",
-     *                  "type": "image",
+     *                  "name": "image400x700.png",
+     *                  "type": "image/png",
      *                  "path": "public/image/jx3m8NPBgy.png",
      *                  "status": 0,
      *                  "created_at": "2022-09-29T17:03:15.000000Z",
@@ -294,6 +246,173 @@ class SwaggerFile extends Controller
      * )
      */
     public function update()
+    {
+        # code...
+    }
+    /**
+     * @method post
+     * @return \Illuminate\Http\Response
+     * @OA\POST(
+     * path="/api/storage/client/file/rename",
+     * summary="Rename a file",
+     * description="use token",
+     * operationId="renamefile",
+     * tags={"Storage Api file"},
+     * security={ {"passport": {} }},
+     * @OA\RequestBody(
+     *      @OA\MediaType(
+     *      mediaType="multipart/form-data",
+     *      @OA\Schema(
+     *          type="object",
+     *          @OA\Property(
+     *              description="path file",
+     *              property="path",
+     *              type="string",
+     *              example="image/image.png"
+     *          ),
+     *          @OA\Property(
+     *              description="new file name",
+     *              property="newname",
+     *              type="string",
+     *              example="image1.png"
+     *          ),
+     *     )
+     *   )
+     * ),
+     *  @OA\Response(
+     *    response=200,
+     *    description="Success",
+     *    @OA\JsonContent(
+     *       @OA\Property(
+     *          property="message",
+     *          type="object",
+     *          example={
+     *              "message": "Rename success",
+     *              "content": {
+     *                 "id": 1,
+     *                  "name":
+     *                  "image400x700.png",
+     *                  "name":
+     *                  "jx3m8NPBgy.png",
+     *                  "type": "image",
+     *                  "path": "public/image/jx3m8NPBgy.png",
+     *                  "status": 0,
+     *                  "created_at": "2022-09-29T17:03:15.000000Z",
+     *                  "updated_at": "2022-09-29T17:13:16.000000Z",
+     *                  "deleted_at": null,
+     *                  "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
+     *              }
+     *          }
+     *      ),
+     *    ),
+     * ),
+     *  @OA\Response(
+     *    response=404,
+     *    description="not found",
+     *    @OA\JsonContent(
+     *       @OA\Property(
+     *          property="message",
+     *          type="string",
+     *          example={
+     *              "message": "not found",
+     *          }
+     *      ),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=500,
+     *    description="Wrong",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Rename file fail")
+     *        )
+     *     )
+     * )
+     */
+    public function rename()
+    {
+        # code...
+    }
+
+    /**
+     * @method post
+     * @return \Illuminate\Http\Response
+     * @OA\POST(
+     * path="/api/storage/client/file/move",
+     * summary="move a file",
+     * description="use token",
+     * operationId="movefile",
+     * tags={"Storage Api file"},
+     * security={ {"passport": {} }},
+     * @OA\RequestBody(
+     *      @OA\MediaType(
+     *      mediaType="multipart/form-data",
+     *      @OA\Schema(
+     *          type="object",
+     *          @OA\Property(
+     *              description="path file",
+     *              property="path",
+     *              type="string",
+     *              example="image/image.png"
+     *          ),
+     *          @OA\Property(
+     *              description="new path ",
+     *              property="newpath",
+     *              type="string",
+     *              example="images"
+     *          ),
+     *     )
+     *   )
+     * ),
+     *  @OA\Response(
+     *    response=200,
+     *    description="Success",
+     *    @OA\JsonContent(
+     *       @OA\Property(
+     *          property="message",
+     *          type="object",
+     *          example={
+     *              "message": "move success",
+     *              "content": {
+     *                 "id": 1,
+     *                  "name":
+     *                  "image400x700.png",
+     *                  "name":
+     *                  "jx3m8NPBgy.png",
+     *                  "type": "image",
+     *                  "path": "public/image/jx3m8NPBgy.png",
+     *                  "status": 0,
+     *                  "created_at": "2022-09-29T17:03:15.000000Z",
+     *                  "updated_at": "2022-09-29T17:13:16.000000Z",
+     *                  "deleted_at": null,
+     *                  "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
+     *              }
+     *          }
+     *      ),
+     *    ),
+     * ),
+     *  @OA\Response(
+     *    response=404,
+     *    description="not found",
+     *    @OA\JsonContent(
+     *       @OA\Property(
+     *          property="message",
+     *          type="string",
+     *          example={
+     *              "message": "not found",
+     *          }
+     *      ),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=500,
+     *    description="Wrong",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="move file fail")
+     *        )
+     *     )
+     * )
+     */
+    public function move()
     {
         # code...
     }
@@ -337,6 +456,51 @@ class SwaggerFile extends Controller
     {
         # code...
     }
+        /**
+     * @method delete
+     * @param integer $id
+     * @return \Illuminate\Http\Response
+     * @OA\Delete(
+     * path="/api/storage/client/file/forcedelete/{id}",
+     * summary="forcedelete file",
+     * description="use token",
+     * operationId="forcedelete",
+     *  tags={"Storage Api file"},
+     * security={ {"passport": {} }},
+     * @OA\Parameter(
+     *    required=true,
+     *    name="id",
+     *    in="path",
+     *    description="id file",
+     *    example="1"
+     * ),
+     *  @OA\Response(
+     *    response=200,
+     *    description="Not Found",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="force delete success"),
+     *    ),
+     * ),
+     *  @OA\Response(
+     *    response=404,
+     *    description="Success",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="notfound"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=500,
+     *    description="Wrong",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="force delete fail")
+     *        )
+     *     )
+     * )
+     */
+    public function forcedelete()
+    {
+        # code...
+    }
     /**
      * get trash
      * @method get
@@ -355,42 +519,21 @@ class SwaggerFile extends Controller
      *     oneOf={
      *         @OA\Schema(ref="#/components/schemas/FileSystem"),
      *     },
-     *     example={
+     *       example=
      *           {
-     *               "id": 1,
-     *               "name":
-     *               "image400x700.png",
-     *               "name":
-     *               "jx3m8NPBgy.png",
-     *               "type": "image",
-     *               "path": "public/image/jx3m8NPBgy.png",
-     *               "status": 0,
-     *               "created_at": "2022-09-29T17:03:15.000000Z",
-     *               "updated_at": "2022-09-29T17:13:16.000000Z",
-     *               "deleted_at": "2022-09-29T19:56:14.000000Z",
-     *               "pivot": {
-     *                   "user_id": 1,
-     *                   "file_id": 1
-     *               }
-     *           },
-     *           {
-     *               "id": 2,
-     *               "name":
-     *               "image2_400x700.png",
-     *               "name":
-     *               "jx3m8NPBgy.png",
-     *               "type": "image",
-     *               "path": "public/image/jx3m8NPBgy.png",
-     *               "status": 0,
-     *               "created_at": "2022-09-29T17:03:15.000000Z",
-     *               "updated_at": "2022-09-29T17:13:16.000000Z",
-     *               "deleted_at": "2022-09-29T19:56:14.000000Z",
-     *                "pivot": {
-     *                   "user_id": 1,
-     *                   "file_id": 2
-     *               }
+     *             "message":"get data success",
+     *              "content":{
+     *                  "id": 1,
+     *                  "name": "image400x700.png",
+     *                  "type": "image/png",
+     *                  "path": "public/image/jx3m8NPBgy.png",
+     *                  "status": 0,
+     *                  "created_at": "2022-09-29T17:03:15.000000Z",
+     *                  "updated_at": "2022-09-29T17:13:16.000000Z",
+     *                  "deleted_at": "2022-09-29T17:13:16.000000Z",
+     *                  "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
+     *              }
      *           }
-     *       }
      *   ),
      * ),
      * @OA\Response(
@@ -469,7 +612,7 @@ class SwaggerFile extends Controller
      *    response=404,
      *    description="Not Found",
      *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="notfound"),
+     *       @OA\Property(property="message", type="string", example="not found"),
      *    ),
      * ),
      * @OA\Response(
@@ -485,51 +628,7 @@ class SwaggerFile extends Controller
     {
         # code...
     }
-    /**
-     * @method delete
-     * @param integer $id
-     * @return \Illuminate\Http\Response
-     * @OA\Delete(
-     * path="/api/storage/client/file/forcedelete/{id}",
-     * summary="forcedelete file",
-     * description="use token",
-     * operationId="forcedelete",
-     *  tags={"Storage Api file"},
-     * security={ {"passport": {} }},
-     * @OA\Parameter(
-     *    required=true,
-     *    name="id",
-     *    in="path",
-     *    description="id file",
-     *    example="1"
-     * ),
-     *  @OA\Response(
-     *    response=200,
-     *    description="Not Found",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="forcedelete success"),
-     *    ),
-     * ),
-     *  @OA\Response(
-     *    response=404,
-     *    description="Success",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="notfound"),
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=500,
-     *    description="Wrong",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="forcedelete fail")
-     *        )
-     *     )
-     * )
-     */
-    public function forcedelete()
-    {
-        # code...
-    }
+
     /**
      * @method delete
      * @param integer $id
