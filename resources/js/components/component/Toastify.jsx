@@ -24,7 +24,7 @@ const Toastify = (props) => {
             switch (toastify.status) {
                 case "success":
                     toast.success(
-                        intl.formatMessage({ id: toastify.text }),
+                        toastify.text,
                         {
                             position: toast.POSITION.TOP_RIGHT,
                         },
@@ -41,7 +41,7 @@ const Toastify = (props) => {
                     break;
                 case "error":
                     toast.error(
-                        intl.formatMessage({ id: toastify.text }),
+                        toastify.text,
                         {
                             position: toast.POSITION.TOP_RIGHT,
                         },
@@ -49,16 +49,16 @@ const Toastify = (props) => {
                             autoClose: toastify.close ? toastify.close : 5000,
                         }
                     );
-                     setTimeout(
-                         () => {
-                             props.clearToasts();
-                         },
-                         toastify.close ? toastify.close : 6000
-                     );
+                    setTimeout(
+                        () => {
+                            props.clearToasts();
+                        },
+                        toastify.close ? toastify.close : 6000
+                    );
                     break;
                 case "warn":
                     toast.warn(
-                        intl.formatMessage({ id: toastify.text }),
+                        toastify.text,
                         {
                             position: toast.POSITION.TOP_RIGHT,
                         },
@@ -66,16 +66,16 @@ const Toastify = (props) => {
                             autoClose: toastify.close ? toastify.close : 5000,
                         }
                     );
-                     setTimeout(
-                         () => {
-                             props.clearToasts();
-                         },
-                         toastify.close ? toastify.close : 6000
-                     );
+                    setTimeout(
+                        () => {
+                            props.clearToasts();
+                        },
+                        toastify.close ? toastify.close : 6000
+                    );
                     break;
                 case "info":
                     toast.info(
-                        intl.formatMessage({ id: toastify.text }),
+                        toastify.text,
                         {
                             position: toast.POSITION.TOP_RIGHT,
                         },
@@ -83,12 +83,12 @@ const Toastify = (props) => {
                             autoClose: toastify.close ? toastify.close : 5000,
                         }
                     );
-                     setTimeout(
-                         () => {
-                             props.clearToasts();
-                         },
-                         toastify.close ? toastify.close : 6000
-                     );
+                    setTimeout(
+                        () => {
+                            props.clearToasts();
+                        },
+                        toastify.close ? toastify.close : 6000
+                    );
                     break;
             }
         }

@@ -24,7 +24,7 @@ const Logout = (props) => {
 
             const notify = {
                 title: "res.title.success",
-                text: ["res.logout.success"],
+                text: [intl.formatMessage({ id: "res.logout.success" })],
                 icon: "success",
                 confirmText: "common.ok",
             };
@@ -64,7 +64,7 @@ const Logout = (props) => {
         if (props.access_token === false && prevState == true) {
             const notify = {
                 title: "res.title.error",
-                text: ["res.logout.needlogin"],
+                text: [intl.formatMessage({ id: "res.logout.needlogin" })],
                 icon: "error",
                 confirmText: "common.ok",
             };
@@ -79,7 +79,6 @@ const Logout = (props) => {
 };
 const mapStateToProps = (state) => {
     return {
-
         access_token: state.admin.access_token,
         notify: state.app.notify,
         language: state.app.language,
@@ -92,12 +91,10 @@ const mapDispatchToProps = (dispatch) => {
         clearNotify: () => dispatch(actions.clearNotify()),
 
         unsetAdmin: () => dispatch(actions.unsetAdmin()),
-        setAccessToken: (token) =>
-            dispatch(actions.setAccessToken(token)),
+        setAccessToken: (token) => dispatch(actions.setAccessToken(token)),
         clearAccessToken: () => dispatch(actions.clearAccessToken()),
 
-        setRefreshToken: (token) =>
-            dispatch(actions.setRefreshToken(token)),
+        setRefreshToken: (token) => dispatch(actions.setRefreshToken(token)),
         clearRefreshToken: () => dispatch(actions.clearRefreshToken),
     };
 };

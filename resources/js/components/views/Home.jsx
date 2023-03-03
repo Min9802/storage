@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Container, Form, FormControl, InputGroup, Row } from "react-bootstrap";
+import {
+    Button,
+    Card,
+    Col,
+    Container,
+    Form,
+    FormControl,
+    InputGroup,
+    Row,
+} from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import ReactDOM from "react-dom";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -15,16 +24,16 @@ import {
     FaUserAlt,
     FaSignInAlt,
     FaSignOutAlt,
-    FaUserCircle
+    FaUserCircle,
 } from "react-icons/fa";
 import { TbApps, TbLockAccess, TbApi } from "react-icons/tb";
-import { BsFileEarmarkLock2Fill, BsClockHistory } from "react-icons/bs"
+import { BsFileEarmarkLock2Fill, BsClockHistory } from "react-icons/bs";
 import {
     MdContentCopy,
     MdDriveFileRenameOutline,
     MdLabel,
-    MdRemoveCircle
-} from "react-icons/md"
+    MdRemoveCircle,
+} from "react-icons/md";
 //util
 import {
     CheckRef,
@@ -56,7 +65,7 @@ const Home = (props) => {
     const initValues = {
         name: "",
         redirect: "http://127.0.0.1",
-    }
+    };
     const [formValues, setFormValues] = useState(initValues);
     const [formErr, setFormErrs] = useState([]);
     useEffect(() => {
@@ -77,7 +86,7 @@ const Home = (props) => {
         if (prevState) {
             getClients();
         }
-    }, [props.access_token])
+    }, [props.access_token]);
     const input = {
         label: intl.formatMessage({ id: "label.refresh_token" }),
         name: "copy",
@@ -105,55 +114,56 @@ const Home = (props) => {
                 }}
             />
         ),
-    }
+    };
     const OnChange = (e) => {
         const { name, value } = e.target;
         setFormValues({ ...formValues, [name]: value });
-    }
+    };
     const toggleModal = () => {
         setModal(!modal);
-    }
+    };
     const getClients = async () => {
         try {
             const response = await OauthApi.getClient();
-            setClients(response.data)
+            setClients(response.data);
         } catch (err) {
             const notify = {
                 title: "res.title.error",
-                text: ["res.getdata.fail"],
+                text: [intl.formatMessage({ id: "res.getdata.fail" })],
                 icon: "error",
                 confirmText: "common.ok",
-            }
+            };
             props.setNotify(notify);
+            history("/login");
         }
-    }
+    };
     const Submit = async () => {
         try {
             const response = await OauthApi.createClient(formValues);
             const notify = {
                 title: "res.title.success",
-                text: ["res.add.success"],
+                text: [intl.formatMessage({ id: "res.add.success" })],
                 icon: "success",
                 confirmText: "common.ok",
-            }
+            };
             props.setNotify(notify);
             getClients();
             setModal(!modal);
         } catch (err) {
             const notify = {
                 title: "res.title.error",
-                text: ["res.add.fail"],
+                text: [intl.formatMessage({ id: "res.add.fail" })],
                 icon: "error",
                 confirmText: "common.ok",
-            }
+            };
             props.setNotify(notify);
             setModal(!modal);
         }
-    }
+    };
     const toggleDelete = (id) => {
         const notify = {
             title: "res.title.warning",
-            text: ["res.ask.delete"],
+            text: [intl.formatMessage({ id: "res.ask.delete" })],
             icon: "warning",
             confirmText: "common.ok",
             cancelText: "common.cancel",
@@ -165,33 +175,34 @@ const Home = (props) => {
             },
         };
         props.setNotify(notify);
-    }
+    };
     const removeClient = async (id) => {
         try {
             const response = await OauthApi.deleteClient(id);
             const notify = {
                 title: "res.title.success",
-                text: ["res.delete.success"],
+                text: [intl.formatMessage({ id: "res.delete.success" })],
                 icon: "success",
                 confirmText: "common.ok",
-            }
+            };
             props.setNotify(notify);
             getClients();
         } catch (err) {
             const notify = {
                 title: "res.title.error",
-                text: ["res.delete.fail"],
+                text: [intl.formatMessage({ id: "res.delete.fail" })],
                 icon: "error",
                 confirmText: "common.ok",
-            }
+            };
             props.setNotify(notify);
         }
-    }
+    };
     return (
         <Col md={12}>
             <Row className="justify-content-md-center">
                 {modal ? (
-                    <ModalCustom show={modal}
+                    <ModalCustom
+                        show={modal}
                         closeFunc={toggleModal}
                         title={"label.add"}
                         close={"common.close"}
@@ -216,9 +227,13 @@ const Home = (props) => {
                                     />
                                 </Form>
                             </>
-                        } />
+                        }
+                    />
                 ) : null}
-                <Col md={mobile ? 12 : 4} className="d-flex justify-content-center">
+                <Col
+                    md={mobile ? 12 : 4}
+                    className="d-flex justify-content-center"
+                >
                     <CardCustom
                         md={3}
                         hg={3}
@@ -262,7 +277,9 @@ const Home = (props) => {
                                     </Col>
                                     <Col>
                                         <strong htmlFor="name">
-                                            <FormattedMessage id={"label.name"} />
+                                            <FormattedMessage
+                                                id={"label.name"}
+                                            />
                                             {": "}
                                         </strong>
                                         {props.adminInfo ? (
@@ -275,7 +292,9 @@ const Home = (props) => {
                                     </Col>
                                     <Col>
                                         <strong htmlFor="email">
-                                            <FormattedMessage id={"label.email"} />
+                                            <FormattedMessage
+                                                id={"label.email"}
+                                            />
                                             {": "}
                                         </strong>
                                         {prevState ? (
@@ -296,23 +315,29 @@ const Home = (props) => {
                         <div className="form_group">
                             {prevState && props.access_token ? (
                                 <div className="form-group">
-                                    <Button variant="success" onClick={toggleModal} className="float-start form_group">
+                                    <Button
+                                        variant="success"
+                                        onClick={toggleModal}
+                                        className="float-start form_group"
+                                    >
                                         <TbApps />{" "}
                                         <FormattedMessage id="common.add" />
                                     </Button>
                                     <Button
                                         variant="success"
                                         className="float-end form_group"
-                                        onClick={() => { window.open('/api/docs', '_blank') }
-                                        }
+                                        onClick={() => {
+                                            window.open("/api/docs", "_blank");
+                                        }}
                                     >
                                         <TbApi /> {"API"}
                                     </Button>
                                     <Button
                                         variant="primary"
                                         className="float-end form_group"
-                                        onClick={() => { window.open('/log', '_blank') }
-                                        }
+                                        onClick={() => {
+                                            window.open("/logs", "_blank");
+                                        }}
                                     >
                                         <BsClockHistory /> {"Logs"}
                                     </Button>
@@ -321,49 +346,78 @@ const Home = (props) => {
                         </div>
                         <div className="form_group">
                             <Row>
-                                {clients ? clients.map((client, key) => (
-                                    <Col md={6} key={key}>
-                                        <Card className="form_group" >
-                                            <Card.Header>
-                                                <span>App {client.name}  {key}</span>
-                                                <Button
-                                                    variant="danger"
-                                                    className="float-end"
-                                                    onClick={() => {
-                                                        toggleDelete(client.id)
-                                                    }
-                                                    }
-                                                >
-                                                    <MdRemoveCircle />
-                                                </Button>
-                                            </Card.Header>
-                                            <CopyButton
-                                                label={<FormattedMessage id="label.name" />}
-                                                disabled={true}
-                                                value={client.name}
-                                                tooltip={<FormattedMessage id="label.name" />}
-                                                iconStart={<MdLabel />}
-                                                iconEnd={<MdContentCopy />}
-                                            />
-                                            <CopyButton
-                                                label={<FormattedMessage id="label.client_id" />}
-                                                disabled={true}
-                                                value={client.id}
-                                                tooltip={<FormattedMessage id="label.client_id" />}
-                                                iconStart={<MdLabel />}
-                                                iconEnd={<MdContentCopy />}
-                                            />
-                                            <CopyButton label={<FormattedMessage id="label.client_secret" />}
-                                                disabled={true}
-                                                value={client.secret}
-                                                tooltip={<FormattedMessage id="label.client_secret" />}
-                                                iconStart={<MdLabel />}
-                                                iconEnd={<MdContentCopy />}
-                                            />
-                                            <span className="form_group">{DateTime.format(client.updated_at)}</span>
-                                        </Card>
-                                    </Col>
-                                )) : null}
+                                {clients
+                                    ? clients.map((client, key) => (
+                                          <Col md={6} key={key}>
+                                              <Card className="form_group">
+                                                  <Card.Header>
+                                                      <span>
+                                                          App {client.name}{" "}
+                                                          {key}
+                                                      </span>
+                                                      <Button
+                                                          variant="danger"
+                                                          className="float-end"
+                                                          onClick={() => {
+                                                              toggleDelete(
+                                                                  client.id
+                                                              );
+                                                          }}
+                                                      >
+                                                          <MdRemoveCircle />
+                                                      </Button>
+                                                  </Card.Header>
+                                                  <CopyButton
+                                                      label={
+                                                          <FormattedMessage id="label.name" />
+                                                      }
+                                                      disabled={true}
+                                                      value={client.name}
+                                                      tooltip={
+                                                          <FormattedMessage id="label.name" />
+                                                      }
+                                                      iconStart={<MdLabel />}
+                                                      iconEnd={
+                                                          <MdContentCopy />
+                                                      }
+                                                  />
+                                                  <CopyButton
+                                                      label={
+                                                          <FormattedMessage id="label.client_id" />
+                                                      }
+                                                      disabled={true}
+                                                      value={client.id}
+                                                      tooltip={
+                                                          <FormattedMessage id="label.client_id" />
+                                                      }
+                                                      iconStart={<MdLabel />}
+                                                      iconEnd={
+                                                          <MdContentCopy />
+                                                      }
+                                                  />
+                                                  <CopyButton
+                                                      label={
+                                                          <FormattedMessage id="label.client_secret" />
+                                                      }
+                                                      disabled={true}
+                                                      value={client.secret}
+                                                      tooltip={
+                                                          <FormattedMessage id="label.client_secret" />
+                                                      }
+                                                      iconStart={<MdLabel />}
+                                                      iconEnd={
+                                                          <MdContentCopy />
+                                                      }
+                                                  />
+                                                  <span className="form_group">
+                                                      {DateTime.format(
+                                                          client.updated_at
+                                                      )}
+                                                  </span>
+                                              </Card>
+                                          </Col>
+                                      ))
+                                    : null}
                             </Row>
                         </div>
                     </Card>
@@ -385,12 +439,10 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
     return {
-        setAccessToken: (token) =>
-            dispatch(actions.setAccessToken(token)),
+        setAccessToken: (token) => dispatch(actions.setAccessToken(token)),
         clearAccessToken: () => dispatch(actions.clearAccessToken()),
 
-        setRefreshToken: (token) =>
-            dispatch(actions.setRefreshToken(token)),
+        setRefreshToken: (token) => dispatch(actions.setRefreshToken(token)),
         clearRefreshToken: () => dispatch(actions.clearRefreshToken),
         setNotify: (notify) => dispatch(actions.setNotify(notify)),
         clearNotify: () => dispatch(actions.clearNotify()),
@@ -401,4 +453,3 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
-

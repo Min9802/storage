@@ -1,24 +1,36 @@
 <?php
 namespace App\Traits;
 
+use App\Models\Client;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Str;
 trait StorageTrait
 {
-    public function uploadFile($folder, $file)
+    public function uploadFile($path = null, $file, $name = null)
     {
-        $fileNameOrigin = $file->getClientOriginalName();
-        $fileNameHash = Str::random(20) . '.' . $file->getClientOriginalExtension();
-        $filePath = $file->storeAs('/public/'.$folder, $fileNameHash);
-        $file_type = $file->getClientOriginalExtension();
+        $user = auth()->user();
+        if(!$user){
+            $user = Client::getClient();
+            $username = $user->name;
+        }else{
+            $username = $user->username;
+        }
+        if(!$name){
+            $name = $file->getClientOriginalName();
+            $nameHash = Str::random(20) . '.' . $file->getClientOriginalExtension();
+        }
+        $pathFile =  Storage::disk('public')->putFileAs($username.'/'.$path, $file, $name);
+        $type = $file->getMimeType();
+        // $filePath = $file->storeAs('/public/'.$folder, $fileNameHash);
+        // $type = $file->getMimeType();
         $dataUploadTrait = [
-            'folder' => $folder,
-            'type' => $folder .'/'.$file_type,
-            'name' => $fileNameOrigin,
-            'hash' => $fileNameHash,
-            'path' => $filePath,
+            'folder' => $path,
+            'type' => $type,
+            'name' => $name,
+            'hash' => $name ?? $nameHash,
+            'path' => $pathFile,
         ];
         return $dataUploadTrait;
     }

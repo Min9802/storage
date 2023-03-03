@@ -33,42 +33,12 @@ const Notify = (props) => {
         if (prevState && notify) {
             const ArrText = [];
             const texts = notify.text;
-            if ( Array.isArray(texts[0])) {
-                Object.values(...texts).map((text, i) => {
-                    if (notify.data && i == 1) {
-                        ArrText.push(
-                            " " +
-                                intl.formatMessage({
-                                    id: text,
-                                }) +
-                                notify.data
-                        );
-                    } else {
-                        ArrText.push(
-                            " " +
-                                intl.formatMessage({
-                                    id: text,
-                                })
-                        );
-                    }
+            if (texts.length > 1) {
+                texts.map((text) => {
+                    ArrText.push(text);
                 });
             } else {
-                if (texts.length > 1) {
-                    texts.map(text => {
-                        ArrText.push(
-                            intl.formatMessage({
-                                id: text,
-                            })
-                        );
-                    })
-                } else {
-                    ArrText.push(
-                        intl.formatMessage({
-                            id: texts,
-                        })
-                    );
-                }
-
+                ArrText.push(texts);
             }
 
             Swal.fire({
@@ -101,13 +71,6 @@ const Notify = (props) => {
             });
         }
     }, [loading, notify]);
-    useEffect(() => {
-        const timeOut = setInterval(() => {
-            props.clearNotify();
-        }, 5000)
-        return clearInterval(timeOut);
-    })
-
     return <></>;
 };
 const mapStateToProps = (state) => {

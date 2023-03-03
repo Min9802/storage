@@ -11,278 +11,10 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/storage/upload": {
-            "post": {
-                "tags": [
-                    "Storage"
-                ],
-                "summary": "upload file.",
-                "description": "upload File",
-                "operationId": "ed534182e3972abffeaf50b50ccb0cee",
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "file": {
-                                        "description": "file to upload",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "format": "binary"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "oneOf": [
-                                        {
-                                            "$ref": "#/components/schemas/FileSystem"
-                                        }
-                                    ]
-                                },
-                                "example": {
-                                    "message": "res.upload.success",
-                                    "file": {
-                                        "id": 1,
-                                        "name": "jx3m8NPBgy.png",
-                                        "type": "image",
-                                        "path": "public/image/jx3m8NPBgy.png",
-                                        "status": 0,
-                                        "created_at": "2022-09-29T17:03:15.000000Z",
-                                        "updated_at": "2022-09-29T17:13:16.000000Z",
-                                        "deleted_at": null,
-                                        "url": "http://domain.com/storage/image/jx3m8NPBgy.png"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Wrong",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "res.upload.fail"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "api_key": []
-                    }
-                ]
-            }
-        },
-        "/api/storage/update/{id}": {
-            "post": {
-                "tags": [
-                    "Storage"
-                ],
-                "summary": "update file.",
-                "description": "update File",
-                "operationId": "878e085ce32b4f16b311f507ce864abe",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "id file",
-                        "required": true,
-                        "example": "1"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "file": {
-                                        "description": "file to upload",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "format": "binary"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "oneOf": [
-                                        {
-                                            "$ref": "#/components/schemas/FileSystem"
-                                        }
-                                    ]
-                                },
-                                "example": {
-                                    "message": "res.update.success",
-                                    "file": {
-                                        "id": 1,
-                                        "name": "jx3m8NPBgy.png",
-                                        "type": "image",
-                                        "path": "public/image/jx3m8NPBgy.png",
-                                        "status": 0,
-                                        "created_at": "2022-09-29T17:03:15.000000Z",
-                                        "updated_at": "2022-09-29T17:13:16.000000Z",
-                                        "deleted_at": null,
-                                        "url": "http://domain.com/storage/image/jx3m8NPBgy.png"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Wrong",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "res.update.fail"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "api_key": []
-                    }
-                ]
-            }
-        },
-        "/api/storage/getfile": {
-            "post": {
-                "tags": [
-                    "Storage"
-                ],
-                "summary": "get file",
-                "description": "use token",
-                "operationId": "get file",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Parameter with mutliple examples",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "examples": {
-                            "string": {
-                                "summary": "string path file",
-                                "value": "public/image/xygU1JNO6L.png"
-                            }
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "description": "path file",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "filepath"
-                                ],
-                                "properties": {
-                                    "filepath": {
-                                        "type": "string",
-                                        "example": "public/image/xygU1JNO6L.png"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "oneOf": [
-                                        {
-                                            "$ref": "#/components/schemas/FileSystem"
-                                        }
-                                    ]
-                                },
-                                "example": {
-                                    "id": 1,
-                                    "name": "jx3m8NPBgy.png",
-                                    "type": "image",
-                                    "path": "public/image/jx3m8NPBgy.png",
-                                    "status": 0,
-                                    "created_at": "2022-09-29T17:03:15.000000Z",
-                                    "updated_at": "2022-09-29T17:13:16.000000Z",
-                                    "deleted_at": null,
-                                    "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
-                                    "pivot": {
-                                        "user_id": 1,
-                                        "file_id": 1
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Wrong",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "res.notfound.file"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "api_key": []
-                    }
-                ]
-            }
-        },
-        "/api/storage/getall": {
+        "/api/storage/client/file/list": {
             "get": {
                 "tags": [
-                    "Storage"
+                    "Storage Api file"
                 ],
                 "summary": "get all file",
                 "description": "use token",
@@ -342,7 +74,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "res.getdata.fail"
+                                            "example": "getdata fail"
                                         }
                                     },
                                     "type": "object"
@@ -353,15 +85,266 @@
                 },
                 "security": [
                     {
-                        "api_key": []
+                        "passport": []
                     }
                 ]
             }
         },
-        "/api/storage/delete/{id}": {
+        "/api/storage/client/file/get": {
+            "post": {
+                "tags": [
+                    "Storage Api file"
+                ],
+                "summary": "get file",
+                "description": "use token",
+                "operationId": "get file",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "path": {
+                                        "description": "file path to save",
+                                        "type": "string",
+                                        "example": "Admin/image/redis.png"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FileSystem"
+                                        }
+                                    ]
+                                },
+                                "example": {
+                                    "id": 1,
+                                    "name": "jx3m8NPBgy.png",
+                                    "type": "image",
+                                    "path": "public/image/jx3m8NPBgy.png",
+                                    "status": 0,
+                                    "created_at": "2022-09-29T17:03:15.000000Z",
+                                    "updated_at": "2022-09-29T17:13:16.000000Z",
+                                    "deleted_at": null,
+                                    "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
+                                    "pivot": {
+                                        "user_id": 1,
+                                        "file_id": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Wrong",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "notfound"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/storage/client/file/upload": {
+            "post": {
+                "tags": [
+                    "Storage Api file"
+                ],
+                "summary": "upload file.",
+                "description": "upload File",
+                "operationId": "9ab25748707e4aa63e5e5a6760f76e34",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "description": "file to upload",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "path": {
+                                        "description": "file path to save",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FileSystem"
+                                        }
+                                    ]
+                                },
+                                "example": {
+                                    "message": "upload success",
+                                    "file": {
+                                        "id": 1,
+                                        "name": "jx3m8NPBgy.png",
+                                        "type": "image",
+                                        "path": "public/image/jx3m8NPBgy.png",
+                                        "status": 0,
+                                        "created_at": "2022-09-29T17:03:15.000000Z",
+                                        "updated_at": "2022-09-29T17:13:16.000000Z",
+                                        "deleted_at": null,
+                                        "url": "http://domain.com/storage/image/jx3m8NPBgy.png"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "upload fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/storage/client/file/update/{id}": {
+            "post": {
+                "tags": [
+                    "Storage Api file"
+                ],
+                "summary": "update file.",
+                "description": "update File",
+                "operationId": "180164f5da329e936e67e3deb2d98560",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id file",
+                        "required": true,
+                        "example": "1"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "description": "file to upload",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FileSystem"
+                                        }
+                                    ]
+                                },
+                                "example": {
+                                    "message": "update success",
+                                    "file": {
+                                        "id": 1,
+                                        "name": "jx3m8NPBgy.png",
+                                        "type": "image",
+                                        "path": "public/image/jx3m8NPBgy.png",
+                                        "status": 0,
+                                        "created_at": "2022-09-29T17:03:15.000000Z",
+                                        "updated_at": "2022-09-29T17:13:16.000000Z",
+                                        "deleted_at": null,
+                                        "url": "http://domain.com/storage/image/jx3m8NPBgy.png"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "update fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/storage/client/file/delete/{id}": {
             "delete": {
                 "tags": [
-                    "Storage"
+                    "Storage Api file"
                 ],
                 "summary": "delete file",
                 "description": "use token",
@@ -384,7 +367,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "res.delete.success"
+                                            "example": "delete success"
                                         }
                                     },
                                     "type": "object"
@@ -400,7 +383,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "res.delete.fail"
+                                            "example": "delete fail"
                                         }
                                     },
                                     "type": "object"
@@ -411,64 +394,15 @@
                 },
                 "security": [
                     {
-                        "api_key": []
+                        "passport": []
                     }
                 ]
             }
         },
-        "/api/storage/clear": {
+        "/api/storage/client/trash": {
             "get": {
                 "tags": [
-                    "Storage"
-                ],
-                "summary": "clear file",
-                "description": "use token",
-                "operationId": "clear",
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "res.clear.success"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Wrong",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "res.clear.fail"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "api_key": []
-                    }
-                ]
-            }
-        },
-        "/api/storage/trash": {
-            "get": {
-                "tags": [
-                    "Storage"
+                    "Storage Api file"
                 ],
                 "summary": "trash file",
                 "description": "use token",
@@ -526,7 +460,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "res.getdata.fail"
+                                            "example": "getdata fail"
                                         }
                                     },
                                     "type": "object"
@@ -537,15 +471,64 @@
                 },
                 "security": [
                     {
-                        "api_key": []
+                        "passport": []
                     }
                 ]
             }
         },
-        "/api/storage/restore/{id}": {
+        "/api/storage/client/trash/clean": {
             "get": {
                 "tags": [
-                    "Storage"
+                    "Storage Api file"
+                ],
+                "summary": "clean file",
+                "description": "use token",
+                "operationId": "clean",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "clean success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "clean fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/storage/client/trash/restore/{id}": {
+            "get": {
+                "tags": [
+                    "Storage Api file"
                 ],
                 "summary": "restore file",
                 "description": "use token",
@@ -568,7 +551,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "res.clear.success"
+                                            "example": "restore success"
                                         }
                                     },
                                     "type": "object"
@@ -584,7 +567,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "res.notfound.trash"
+                                            "example": "notfound"
                                         }
                                     },
                                     "type": "object"
@@ -600,7 +583,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "res.clear.fail"
+                                            "example": "restore fail"
                                         }
                                     },
                                     "type": "object"
@@ -611,15 +594,15 @@
                 },
                 "security": [
                     {
-                        "api_key": []
+                        "passport": []
                     }
                 ]
             }
         },
-        "/api/storage/forcedelete/{id}": {
+        "/api/storage/client/file/forcedelete/{id}": {
             "delete": {
                 "tags": [
-                    "Storage"
+                    "Storage Api file"
                 ],
                 "summary": "forcedelete file",
                 "description": "use token",
@@ -642,7 +625,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "res.forcedelete.success"
+                                            "example": "forcedelete success"
                                         }
                                     },
                                     "type": "object"
@@ -658,7 +641,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "res.notfound.trash"
+                                            "example": "notfound"
                                         }
                                     },
                                     "type": "object"
@@ -674,7 +657,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "res.forcedelete.fail"
+                                            "example": "forcedelete fail"
                                         }
                                     },
                                     "type": "object"
@@ -685,7 +668,567 @@
                 },
                 "security": [
                     {
-                        "api_key": []
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/storage/client/trash/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Storage Api file"
+                ],
+                "summary": "deletetrash file",
+                "description": "use token",
+                "operationId": "deletetrash",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id file",
+                        "required": true,
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "delete trash success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "trash not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "delete trash fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/storage/client/folder/list": {
+            "get": {
+                "tags": [
+                    "Storage Api folder"
+                ],
+                "summary": "get folder list",
+                "description": "use token",
+                "operationId": "folderlist",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FileSystem"
+                                        }
+                                    ]
+                                },
+                                "example": {
+                                    "message": "Get data success",
+                                    "folders": [
+                                        "image",
+                                        "audio"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "getdata fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/storage/client/folder/exist": {
+            "post": {
+                "tags": [
+                    "Storage Api folder"
+                ],
+                "summary": "Check folder exist",
+                "description": "use token",
+                "operationId": "folderexists",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "name folder",
+                                        "type": "string",
+                                        "example": "image"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FileSystem"
+                                        }
+                                    ]
+                                },
+                                "example": {
+                                    "message": "Folder Exists"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Wrong",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/storage/client/folder/create": {
+            "post": {
+                "tags": [
+                    "Storage Api folder"
+                ],
+                "summary": "Add new folder",
+                "description": "use token",
+                "operationId": "createfolder",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "name folder",
+                                        "type": "string",
+                                        "example": "image"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "object",
+                                            "example": {
+                                                "message": "Add success",
+                                                "folder": "image"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": {
+                                                "message": "Folder exists"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Add folder fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/storage/client/folder/rename": {
+            "post": {
+                "tags": [
+                    "Storage Api folder"
+                ],
+                "summary": "Rename a folder",
+                "description": "use token",
+                "operationId": "renamefolder",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "name folder",
+                                        "type": "string",
+                                        "example": "image"
+                                    },
+                                    "newname": {
+                                        "description": "name folder",
+                                        "type": "string",
+                                        "example": "images"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "object",
+                                            "example": {
+                                                "message": "Rename success",
+                                                "folder": "image"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": {
+                                                "message": "Folder not found"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rename folder fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/storage/client/folder/getfile": {
+            "post": {
+                "tags": [
+                    "Storage Api folder"
+                ],
+                "summary": "Get file in folder",
+                "description": "use token",
+                "operationId": "getfilefolder",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "name folder",
+                                        "type": "string",
+                                        "example": "image"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "object",
+                                            "example": {
+                                                "message": "get data success",
+                                                "files": [
+                                                    {
+                                                        "id": 3,
+                                                        "name": "redis.png",
+                                                        "folder": "image",
+                                                        "type": "image/png",
+                                                        "hash": "redis.png",
+                                                        "path": "Admin/image/redis.png",
+                                                        "url": "http://127.0.0.1:8001/storage/Admin/image/redis.png",
+                                                        "status": 0,
+                                                        "created_at": "2023-03-02T17:30:13.000000Z",
+                                                        "updated_at": "2023-03-02T17:30:13.000000Z",
+                                                        "deleted_at": null,
+                                                        "pivot": {
+                                                            "user_id": "1",
+                                                            "file_id": 3
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": {
+                                                "message": "Folder not found"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "get data fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/storage/client/folder/delete": {
+            "delete": {
+                "tags": [
+                    "Storage Api folder"
+                ],
+                "summary": "Delete folder",
+                "description": "use token",
+                "operationId": "deleteFolder",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "name folder",
+                                        "type": "string",
+                                        "example": "image"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "object",
+                                            "example": {
+                                                "message": "delete success"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": {
+                                                "message": "Folder not found"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Wrong",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Delete folder fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
                     }
                 ]
             }
@@ -756,6 +1299,24 @@
                 "type": "object",
                 "xml": {
                     "name": "User"
+                }
+            }
+        },
+        "responses": {
+            "500": {
+                "description": "Wrong",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "getdata fail"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
                 }
             }
         },

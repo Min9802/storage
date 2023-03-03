@@ -24,13 +24,11 @@ class AuthServiceProvider extends ServiceProvider
 
     /**
      * Register any authentication / authorization services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerPolicies();
-        // config(['auth.defaults.guard' => 'api']);
+        config(['auth.defaults.guard' => 'api']);
 
         Passport::enableImplicitGrant();
 
@@ -50,9 +48,8 @@ class AuthServiceProvider extends ServiceProvider
             'storage' => 'storage service',
         ]);
         Passport::setDefaultScope([
-            'storage'
+            'storage',
         ]);
-
 
     }
 }

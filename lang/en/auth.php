@@ -12,9 +12,16 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-
+    'success' => 'Login Successfully',
     'failed' => 'These credentials do not match our records.',
-    'password' => 'The provided password is incorrect.',
+    'incorrect' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'recaptcha_false' => 'Recaptcha failed.',
+    'notfound' => 'Not found user',
+    'requirelogin' => 'Require login',
+    'logout' => [
+        'success' => 'Logout Successfully',
+        'failed' => 'Logout Failed'
+    ]
 
 ];

@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\HomeController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -24,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 // Route::get('login', [AuthController::class, 'login'])->name('login');
 // Route::get('test', [HomeController::class, 'test'])->name('test')->middleware('auth:api');
 
-
-
+Route::get('test', [TestController::class, 'test']);
+Route::get('url', [TestController::class, 'url']);
+Route::get('download', [TestController::class, 'download'])->name('download');
 Route::view('/{path?}', 'layouts.app');

@@ -1,7 +1,5 @@
 import { logger } from "redux-logger";
 import thunkMiddleware from "redux-thunk";
-import { routerMiddleware } from "connected-react-router";
-import { createBrowserHistory } from "history";
 
 import { createStore, applyMiddleware, compose } from "redux";
 import { createStateSyncMiddleware } from "redux-state-sync";
@@ -16,26 +14,21 @@ let isDevelopment = environment === "development";
 //hide redux logs
 isDevelopment = false;
 
-export const history = createBrowserHistory({
-    basename: process.env.REACT_APP_ROUTER_BASE_NAME,
-});
-
 const reduxStateSyncConfig = {
     whitelist: [actionTypes.APP_START_UP_COMPLETE, actionTypes.CHANGE_LANGUAGE],
 };
 
-const rootReducer = createRootReducer(history);
+const rootReducer = createRootReducer();
 const middleware = [
-    routerMiddleware(history),
     thunkMiddleware,
     createStateSyncMiddleware(reduxStateSyncConfig),
 ];
 if (isDevelopment) middleware.push(logger);
 
 const composeEnhancers =
-    isDevelopment && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-        ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-        : compose;
+    isDevelopment && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ :
+    compose;
 
 const reduxStore = createStore(
     rootReducer,

@@ -26,7 +26,8 @@ class UploadFileRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => 'required|mimes:jpeg,jpg,png,mp4,qt,mov,mp3,deb'
+            'file' => 'required',
+            'path' => 'required',
         ];
     }
     public function failedValidation(Validator $validator)

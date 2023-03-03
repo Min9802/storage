@@ -69,7 +69,7 @@ return [
     |
     */
 
-    'timezone' => 'asia/ho_chi_minh',
+    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -82,7 +82,7 @@ return [
     |
     */
 
-    'locale' => 'vn',
+    'locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -95,7 +95,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'vn',
+    'fallback_locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -108,7 +108,7 @@ return [
     |
     */
 
-    'faker_locale' => 'vn',
+    'faker_locale' => 'en_US',
 
     /*
     |--------------------------------------------------------------------------
@@ -195,7 +195,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
-        Laravel\Passport\PassportServiceProvider::class,
+
     ],
 
     /*
@@ -211,7 +211,6 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
-        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
     ])->toArray(),
 
 ];

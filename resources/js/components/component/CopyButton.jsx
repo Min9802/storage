@@ -50,13 +50,15 @@ const CopyButton = ({ iconStart, iconEnd, tooltip, ...props }) => {
             await navigator.clipboard.writeText(value);
             const notify = {
                 status: "success",
-                text: "res.copytoclipboard.success",
+                text: [
+                    intl.formatMessage({ id: "res.copytoclipboard.success" }),
+                ],
             };
             props.setToasts(notify);
         } catch (err) {
             const notify = {
                 status: "error",
-                text: "res.copytoclipboard.fail",
+                text: [intl.formatMessage({ id: "res.copytoclipboard.fail" })],
             };
             props.setToasts(notify);
         }
@@ -70,7 +72,9 @@ const CopyButton = ({ iconStart, iconEnd, tooltip, ...props }) => {
                 {iconEnd ? (
                     <>
                         <InputGroup.Text ref={target}>
-                            <i className="icon_end" onClick={handleCopy}>{iconEnd}</i>
+                            <i className="icon_end" onClick={handleCopy}>
+                                {iconEnd}
+                            </i>
                         </InputGroup.Text>
                         <Overlay
                             target={target.current}

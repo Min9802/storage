@@ -15,7 +15,7 @@ class Notification {
                     type: "notify",
                     data: {
                         title: "res.title.error",
-                        text: message,
+                        text: Object.values(message).map((msg) => msg),
                         icon: "error",
                         confirmText: "common.ok",
                     },

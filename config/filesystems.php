@@ -39,7 +39,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL','https://storage.min-services.com').'/storage',
+            'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
@@ -55,6 +55,11 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+        'disk' => [
+             'driver' => 'local',
+             'root' => storage_path('app/disk'),
+             'url' => env('APP_URL','https://storage.min-services.com').'/disk',
+        ]
 
     ],
 

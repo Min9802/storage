@@ -120,4 +120,17 @@ class AuthController extends Controller
         }
 
     }
+    public function checkToken()
+    {
+        try{
+            $auth = $this->client->getClient();
+            return response()->json([
+                'status' => true,
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'status' => false,
+            ],403);
+        }
+    }
 }

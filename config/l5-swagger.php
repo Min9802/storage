@@ -62,7 +62,7 @@ return [
             */
             'middleware' => [
                 'api' => [
-                    'web',
+                    'api',
                 ],
                 'asset' => [],
                 'docs' => [],

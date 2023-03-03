@@ -27,7 +27,7 @@ import {
     CheckRequest,
     Notification,
     DateTime,
-    CheckToken
+    CheckToken,
 } from "../utils";
 //reduxStore
 import { connect } from "react-redux";
@@ -45,7 +45,7 @@ import EN from "../assets/images/lang/EN.png";
 //api
 import AuthApi from "../apis/AuthApi";
 import OauthApi from "../apis/OauthApi";
-
+import Toastify from "../component/Toastify";
 
 const Login = (props) => {
     const history = useNavigate();
@@ -78,12 +78,12 @@ const Login = (props) => {
         setShowpass(false);
     };
     /**
-    * toggle set show password
-    */
+     * toggle set show password
+     */
     useEffect(() => {
         showpasswd ? setTypeInput("text") : setTypeInput("password");
     }, [showpasswd, formValues, formErrs]);
-     //input
+    //input
     const input = [
         {
             label: intl.formatMessage({ id: "label.username" }),
@@ -142,14 +142,13 @@ const Login = (props) => {
             : props.changeLanguageAppRedux(LANGUAGES.EN);
     };
 
-
     useEffect(() => {
         setLoading(false);
         if (prevState) {
             if (props.access_token && props.refresh_token) {
                 const notify = {
                     title: "res.title.info",
-                    text: ["res.logged"],
+                    text: [intl.formatMessage({ id: "res.logged" })],
                     icon: "info",
                     confirmText: "common.ok",
                     confirm: () => {
@@ -178,33 +177,31 @@ const Login = (props) => {
         try {
             const { CLIENT_ID, CLIENT_SECRET } = process.env;
             const data = {
-                grant_type: 'password',
+                grant_type: "password",
                 client_id: CLIENT_ID,
                 client_secret: CLIENT_SECRET,
                 username: formValues.username,
                 password: formValues.password,
-                scope: "storage"
-            }
+                scope: "storage",
+            };
             const response = await OauthApi.Token(data);
+
             return setAdmin(response);
         } catch (err) {
+            const message = err.response.data.message;
             const notify = {
                 title: "res.title.error",
-                text: ["common.bad-request"],
+                text: [message],
                 icon: "error",
                 confirmText: "common.ok",
-                confirm: () => {
-                    props.clearNotify();
-                },
             };
             props.setNotify(notify);
         }
-    }
+    };
     const setAdmin = (response) => {
-
         const user = { ...response.data };
 
-        const expires_in = (user.expires_in);
+        const expires_in = user.expires_in;
         const expires = new Date();
         expires.setTime(expires.getTime() + expires_in * 1000);
 
@@ -213,16 +210,18 @@ const Login = (props) => {
             expires: expires,
         };
         const RefreshToken_expries = new Date();
-        RefreshToken_expries.setTime(RefreshToken_expries.getTime() + 31556926 * 1000);
+        RefreshToken_expries.setTime(
+            RefreshToken_expries.getTime() + 31556926 * 1000
+        );
         const refresh_token = {
             refresh_token: user.refresh_token,
-            expires: RefreshToken_expries
-        }
+            expires: RefreshToken_expries,
+        };
         props.setAccessToken(access_token);
         props.setRefreshToken(refresh_token);
         const notify = {
             title: "res.title.success",
-            text: ["res.loginsuccess"],
+            text: [intl.formatMessage({ id: "res.loginsuccess" })],
             icon: "success",
             confirmText: "common.ok",
         };
@@ -231,6 +230,8 @@ const Login = (props) => {
     };
     return (
         <Container>
+            {props.toastify ? <Toastify /> : null}
+            {props.notify ? <Notify /> : null}
             <Col
                 md={4}
                 className={mobile ? "mobile auth-wrapper" : "auth-wrapper"}
@@ -242,17 +243,11 @@ const Login = (props) => {
                     >
                         <Row className="d-flex justify-content-column">
                             <img src={props.config?.site.logo || Logo} alt="" />
-                            <h3 >
-                                {APP_NAME}
-                            </h3>
+                            <h3>{APP_NAME}</h3>
                         </Row>
                     </Col>
 
-                    <Form
-                        noValidate
-                        validated={validated}
-                        onSubmit={Submit}
-                    >
+                    <Form noValidate validated={validated} onSubmit={Submit}>
                         {input.map((input, key) => {
                             return (
                                 <InputCustom
@@ -271,10 +266,7 @@ const Login = (props) => {
                                 />
                             );
                         })}
-                        <Col
-                            md={6}
-                            className="btn-submit"
-                        >
+                        <Col md={6} className="btn-submit">
                             <Button variant="success" type="submit">
                                 <FaSignInAlt />{" "}
                                 {intl.formatMessage({
@@ -321,16 +313,13 @@ const mapDispatchToProps = (dispatch) => {
         changeLanguageAppRedux: (language) =>
             dispatch(actions.changeLanguageApp(language)),
 
-        setAccessToken: (token) =>
-            dispatch(actions.setAccessToken(token)),
+        setAccessToken: (token) => dispatch(actions.setAccessToken(token)),
         clearAccessToken: () => dispatch(actions.clearAccessToken()),
 
-        setRefreshToken: (token) =>
-            dispatch(actions.setRefreshToken(token)),
+        setRefreshToken: (token) => dispatch(actions.setRefreshToken(token)),
 
         clearRefreshToken: () => dispatch(actions.clearRefreshToken),
         unsetAdmin: () => dispatch(actions.unsetAdmin()),
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
-

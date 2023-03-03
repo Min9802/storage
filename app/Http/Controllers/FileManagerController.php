@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GetFileRequest;
+use App\Http\Requests\MoveFileRequest;
+use App\Http\Requests\RenameFileRequest;
 use App\Http\Requests\UploadFileRequest;
 use App\Models\Client;
 use App\Models\FileSystem;
@@ -25,110 +27,120 @@ class FileManagerController extends Controller
     use StorageTrait;
     private $filesystem;
     private $client;
-    public function __construct(FileSystem $filesystem, Client $client )
+    public function __construct(FileSystem $filesystem, Client $client)
     {
         $this->filesystem = $filesystem;
         $this->client = $client;
     }
-    /**
-     * upload file.
-     * @method post
-     * @param object $request
-     * @return \Illuminate\Http\Response
-     *
-     * @OA\Post(
-     * tags={"Storage"},
-     * description="upload File",
-     * path="/api/storage/upload",
-     * security={{"api_key":{}}},
-     * @OA\RequestBody(
-     *      @OA\MediaType(
-     *      mediaType="multipart/form-data",
-     *      @OA\Schema(
-     *          type="object",
-     *          @OA\Property(
-     *          description="file to upload",
-     *          property="file",
-     *          type="array",
-     *      @OA\Items(
-     *          type="string",
-     *          format="binary",
-     *      ),
-     *     )
-     *    )
-     *   )
-     * ),
-      * @OA\Response(
-     *    response=200,
-     *    description="Success",
-     *    @OA\JsonContent(
-     *     oneOf={
-     *         @OA\Schema(ref="#/components/schemas/FileSystem"),
-     *     },
-     *       example=
-     *           {
-     *               "message": "res.upload.success",
-     *               "file":{
-     *                  "id": 1,
-     *                  "name":
-     *                  "image400x700.png",
-     *                  "name":
-     *                  "jx3m8NPBgy.png",
-     *                  "type": "image",
-     *                  "path": "public/image/jx3m8NPBgy.png",
-     *                  "status": 0,
-     *                  "created_at": "2022-09-29T17:03:15.000000Z",
-     *                  "updated_at": "2022-09-29T17:13:16.000000Z",
-     *                  "deleted_at": null,
-     *                  "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
-     *               }
 
-     *           }
-     *    )
-     * ),
-     *  @OA\Response(
-     *    response=500,
-     *    description="Wrong",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.upload.fail"),
-     *    ),
-     * ),
-     * )
+    /**
+     * get list files
+     * @method GET
+     * @param Request $request
+     * @return Response
+     */
+    function list(Request $request) {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                $user = $this->client->getClient();
+            }
+            $files = $user->files;
+            return response()->json([
+                'message' => trans('res.getdata.success'),
+                'content' => $files,
+            ]);
+        } catch (Exception $e) {
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.getdata.fail'),
+                'content' => false,
+            ], 500);
+        }
+    }
+    /**
+     * get file
+     * @method POST
+     * @param Request $request
+     * @param string $path
+     * @return Response
+     */
+    public function get(GetFileRequest $request)
+    {
+
+        $user = auth()->user();
+        if (!$user) {
+            $user = $this->client->getClient();
+        }
+        $files = $user->files;
+        $trashs = $user->files()->onlyTrashed()->get();
+        $path = $request->path;
+
+        try {
+            $file = $files->where('path', '=', $path)->first();
+            if (!$file) {
+                $file = $trashs->where('path', '=', $path)->first();
+            }
+            return response()->json([
+                'message' => trans('res.getdata.success'),
+                'content' => $file,
+            ]);
+        } catch (Exception $e) {
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.getdata.fail'),
+                'content' => false,
+            ], 404);
+        }
+
+    }
+
+    /**
+     * upload file
+     * @method POST
+     * @param Request $request
+     * @param file $file
+     * @param string $path
+     * @return Response
      */
     public function upload(UploadFileRequest $request)
     {
         $user = auth()->user();
-        if(!$user){
+        if (!$user) {
             $user = $this->client->getClient();
         }
-
+        $path = $request->path;
         $file = $request->file('file');
         if (!$file) {
             return response()->json([
-                'message' => 'res.invalid.file',
+                'message' => trans('res.invalidfile'),
             ], 400);
         }
         try {
             DB::beginTransaction();
-            $extension = $file->extension();
-            $imageExtensions = ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'svg', 'svgz', 'cgm', 'djv', 'djvu', 'ico', 'ief', 'jpe', 'pbm', 'pgm', 'pnm', 'ppm', 'ras', 'rgb', 'tif', 'tiff', 'wbmp', 'xbm', 'xpm', 'xwd'];
-            $videoExtensions = ["webm", "mp4", "ogv"];
-            $audioExtensions = ['mp3'];
-            $debExtensions = ['deb'];
-            if (collect($imageExtensions)->contains($extension)) {
-                $folder = "image";
+            if (!$path) {
+                $extension = $file->extension();
+                $imageExtensions = ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'svg', 'svgz', 'cgm', 'djv', 'djvu', 'ico', 'ief', 'jpe', 'pbm', 'pgm', 'pnm', 'ppm', 'ras', 'rgb', 'tif', 'tiff', 'wbmp', 'xbm', 'xpm', 'xwd'];
+                $videoExtensions = ["webm", "mp4", "ogv"];
+                $audioExtensions = ['mp3'];
+                $debExtensions = ['deb'];
+                if (collect($imageExtensions)->contains($extension)) {
+                    $path = "image";
+                }
+                if (collect($videoExtensions)->contains($extension)) {
+                    $path = "video";
+                }
+                if (collect($audioExtensions)->contains($extension)) {
+                    $path = "audio";
+                }
+                if (collect($debExtensions)->contains($extension)) {
+                    $path = "deb";
+                }
+            } else {
+                $name = explode('/', $path)[1];
+                $path = explode('/', $path)[0];
             }
-            if (collect($videoExtensions)->contains($extension)) {
-                $folder = "video";
-            }
-            if (collect($audioExtensions)->contains($extension)) {
-                $folder = "audio";
-            }
-            if (collect($debExtensions)->contains($extension)) {
-                $folder = "deb";
-            }
-            $fileInfo = $this->uploadFile($folder, $file);
-
+            $fileInfo = $this->uploadFile($path, $file, $name);
             $fileupload = [
                 'folder' => $fileInfo['folder'],
                 'type' => $fileInfo['type'],
@@ -148,106 +160,46 @@ class FileManagerController extends Controller
             $user->files()->attach($fileuploaded->id);
             DB::commit();
             return response()->json([
-                'message' => 'res.upload.success',
+                'message' => trans('res.upload.success'),
                 'content' => $fileuploaded,
             ]);
         } catch (Exception $e) {
             DB::rollback();
             Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
             return response()->json([
-                'message' => 'res.upload.fail',
+                'message' => trans('res.upload.fail'),
             ], 500);
         }
     }
     /**
-     * update file.
-     * @method post
-     * @param object $request
-     * @return \Illuminate\Http\Response
-     *
-     * @OA\Post(
-     * tags={"Storage"},
-     * description="update File",
-     * path="/api/storage/update/{id}",
-     * security={{"api_key":{}}},
-     * @OA\Parameter(
-     *    required=true,
-     *    name="id",
-     *    in="path",
-     *    description="id file",
-     *    example="1"
-     * ),
-     * @OA\RequestBody(
-     *      @OA\MediaType(
-     *      mediaType="multipart/form-data",
-     *      @OA\Schema(
-     *          type="object",
-     *          @OA\Property(
-     *          description="file to upload",
-     *          property="file",
-     *          type="array",
-     *      @OA\Items(
-     *          type="string",
-     *          format="binary",
-     *      ),
-     *     )
-     *    )
-     *   )
-     * ),
-     * @OA\Response(
-     *    response=200,
-     *    description="Success",
-     *    @OA\JsonContent(
-     *     oneOf={
-     *         @OA\Schema(ref="#/components/schemas/FileSystem"),
-     *     },
-     *       example=
-     *           {
-     *             "message":"res.update.success",
-     *              "file":{
-     *                  "id": 1,
-     *                  "name":
-     *                  "image400x700.png",
-     *                  "name":
-     *                  "jx3m8NPBgy.png",
-     *                  "type": "image",
-     *                  "path": "public/image/jx3m8NPBgy.png",
-     *                  "status": 0,
-     *                  "created_at": "2022-09-29T17:03:15.000000Z",
-     *                  "updated_at": "2022-09-29T17:13:16.000000Z",
-     *                  "deleted_at": null,
-     *                  "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
-     *              }
-     *           }
-     *    )
-     * ),
-     *  @OA\Response(
-     *    response=500,
-     *    description="Wrong",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.update.fail"),
-     *    ),
-     * ),
-     * )
+     * update file
+     * @method POST
+     * @param Request $request
+     * @param integer $id
+     * @param file $file
+     * @return Response
      */
     public function update(UploadFileRequest $request, $id)
     {
         try {
             DB::beginTransaction();
             $user = auth()->user();
-            if(!$user){
+            if (!$user) {
                 $user = $this->client->getClient();
             }
             $file = $request->file('file');
+            $path = $request->path;
+            $name = explode('/', $path)[1];
+            $folder = explode('/', $path)[0];
             $fileChange = $this->filesystem->find($id);
             if (!$fileChange) {
                 return response()->json([
-                    'message' => 'res.notfound.file',
+                    'message' => trans('res.notfound'),
                 ], 404);
             }
             $folder = $fileChange->folder;
-            $fileInfo = $this->uploadFile($folder, $file);
-            if($fileInfo){
+            $fileInfo = $this->uploadFile($folder, $file, $name);
+            if ($fileInfo) {
                 Storage::delete($fileChange->path);
             }
             $fileupload = [
@@ -268,7 +220,7 @@ class FileManagerController extends Controller
             ]);
             DB::commit();
             return response()->json([
-                'message' => 'res.update.success',
+                'message' => trans('res.update.success'),
                 'content' => $fileChange,
             ]);
 
@@ -276,238 +228,225 @@ class FileManagerController extends Controller
             DB::rollback();
             Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
             return response()->json([
-                'message' => 'res.update.fail',
-                'content' => false
+                'message' => trans('res.update.fail'),
+                'content' => false,
             ], 500);
         }
     }
-    /**
-     * get file.
-     * @method post
-     * @param object $request
-     * @return \Illuminate\Http\Response
-     *
-     * @OA\POST(
-     * path="/api/storage/getfile",
-     * summary="get file",
-     * description="use token",
-     * operationId="get file",
-     * tags={"Storage"},
-     * security={ {"api_key": {} }},
-     *  @OA\Parameter(
-     *      description="Parameter with mutliple examples",
-     *      in="path",
-     *      name="id",
-     *      required=true,
-     *      @OA\Schema(type="string"),
-     *      @OA\Examples(example="string", value="public/image/xygU1JNO6L.png", summary="string path file"),
-     *  ),
-     * @OA\RequestBody(
-     *    required=true,
-     *    description="path file",
-     *    @OA\JsonContent(
-     *       required={"filepath"},
-     *       @OA\Property(property="filepath", type="string", example="public/image/xygU1JNO6L.png"),
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=200,
-     *    description="Success",
-     *    @OA\JsonContent(
-     *     oneOf={
-     *         @OA\Schema(ref="#/components/schemas/FileSystem"),
-     *     },
-     *       example=
-     *           {
-     *               "id": 1,
-     *               "name":
-     *               "image400x700.png",
-     *               "name":
-     *               "jx3m8NPBgy.png",
-     *               "type": "image",
-     *               "path": "public/image/jx3m8NPBgy.png",
-     *               "status": 0,
-     *               "created_at": "2022-09-29T17:03:15.000000Z",
-     *               "updated_at": "2022-09-29T17:13:16.000000Z",
-     *               "deleted_at": null,
-     *               "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
-     *               "pivot": {
-     *                   "user_id": 1,
-     *                   "file_id": 1
-     *               }
-     *           }
-     *    )
-     * ),
-     * @OA\Response(
-     *    response=404,
-     *    description="Wrong",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.notfound.file")
-     *        )
-     *     )
-     * )
-     * ),
-     */
-    public function getfile(GetFileRequest $request)
+    public function rename(RenameFileRequest $request)
     {
-
-        $user = auth()->user();
-        if(!$user){
-            $user = $this->client->getClient();
-        }
-        $files = $user->files;
-        $trashs = $user->files()->onlyTrashed()->get();
-        $hashName = $request->hash;
         try {
-            $file = $files->where('hash', '=', $hashName)->first();
-            if(!$file){
-                $file = $trashs->where('hash', '=', $hashName)->first();
+            DB::beginTransaction();
+            $user = auth()->user();
+            if (!$user) {
+                $user = $this->client->getClient();
+                $username  = $user->name;
+            }else{
+                $username = $user->username;
             }
+            $path = $request->path;
+            $newname = $request->newname;
+            $file = $user->files()->where('path', $path)->first();
+            if(!$file){
+                return response()->json([
+                    'message' => trans('res.notfound'),
+                ],404);
+            }else{
+                $folder = $file->folder;
+                $newpath = $username . '/' . $folder . '/' . $newname;
+                $renamed = Storage::disk('public')->copy($path, $newpath );
+                if($renamed){
+                    Storage::disk('public')->delete($path);
+                }else{
+                    return response()->json([
+                        'message' => trans('res.rename.fail'),
+                    ], 500);
+                }
+                $urlnew = Storage::disk('public')->url($newpath);
+                $file->path  = $newpath;
+                $file->url  = $urlnew;
+                $file->name = $newname;
+                $file->hash = $newname;
+                $file->save();
+            }
+            DB::commit();
             return response()->json([
-                'message' => 'res.getdata.success',
+                'message' => trans('res.rename.success'),
                 'content' => $file
             ]);
         } catch (Exception $e) {
+            DB::rollback();
             Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
             return response()->json([
-                'message' => 'res.notfound.file',
-                'content' => false
-            ], 404);
+                'message' => trans('res.rename.fail'),
+            ], 500);
         }
-
     }
-    /**
-     * all file.
-     * @method get
-     * @param object $request
-     * @return \Illuminate\Http\Response
-     *
-     *
-     * @OA\GET(
-     * path="/api/storage/getall",
-     * summary="get all file",
-     * description="use token",
-     * operationId="get all file",
-     * tags={"Storage"},
-     * security={ {"api_key": {} }},
-     * @OA\Response(
-     *    response=200,
-     *    description="Success",
-     *    @OA\JsonContent(
-     *     oneOf={
-     *         @OA\Schema(ref="#/components/schemas/FileSystem"),
-     *     },
-     *     example={
-     *           {
-     *               "id": 1,
-     *               "name":
-     *               "image400x700.png",
-     *               "name":
-     *               "jx3m8NPBgy.png",
-     *               "type": "image",
-     *               "path": "public/image/jx3m8NPBgy.png",
-     *               "status": 0,
-     *               "created_at": "2022-09-29T17:03:15.000000Z",
-     *               "updated_at": "2022-09-29T17:13:16.000000Z",
-     *               "deleted_at": null,
-     *               "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
-     *               "pivot": {
-     *                   "user_id": 1,
-     *                   "file_id": 1
-     *               }
-     *           },
-     *           {
-     *               "id": 2,
-     *               "name":
-     *               "image2_400x700.png",
-     *               "name":
-     *               "jx3m8NPBgy.png",
-     *               "type": "image",
-     *               "path": "public/image/jx3m8NPBgy.png",
-     *               "status": 0,
-     *               "created_at": "2022-09-29T17:03:15.000000Z",
-     *               "updated_at": "2022-09-29T17:13:16.000000Z",
-     *               "deleted_at": null,
-     *               "url": "http://domain.com/storage/image/jx3m8NPBgy.png",
-     *                "pivot": {
-     *                   "user_id": 1,
-     *                   "file_id": 2
-     *               }
-     *           }
-     *       }
-     *   ),
-     * ),
-     * @OA\Response(
-     *    response=500,
-     *    description="Wrong",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.getdata.fail")
-     *        )
-     *     )
-     * )
-     */
-    public function allfile(Request $request)
+    public function move(MoveFileRequest $request)
     {
         try {
+            DB::beginTransaction();
             $user = auth()->user();
-            if(!$user){
+            if (!$user) {
                 $user = $this->client->getClient();
+                $username  = $user->name;
+            }else{
+                $username = $user->username;
             }
-            $files = $user->files;
+            $path = $request->path;
+            $newpath = $request->newpath;
+            $file = $user->files()->where('path', $path)->first();
+            if(!$file){
+                return response()->json([
+                    'message' => trans('res.notfound'),
+                ],404);
+            }else{
+                $folder = $file->folder;
+                $filename = $file->name;
+                $newpath = $username . '/' . $newpath . '/' . $filename;
+                $moved = Storage::disk('public')->copy($path, $newpath );
+                if($moved){
+                    Storage::disk('public')->delete($path);
+                }else{
+                    return response()->json([
+                        'message' => trans('res.move.fail'),
+                    ], 500);
+                }
+                $urlnew = Storage::disk('public')->url($newpath);
+                $file->path  = $newpath;
+                $file->url  = $urlnew;
+                $file->save();
+            }
+            DB::commit();
             return response()->json([
-                'message' => 'res.getdata.success',
-                'content' => $files
+                'message' => trans('res.move.success'),
+                'content' => $file
             ]);
         } catch (Exception $e) {
+            DB::rollback();
             Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
             return response()->json([
-                'message' => 'res.getdata.fail',
-                'content' => false
+                'message' => trans('res.move.fail'),
             ], 500);
         }
     }
     /**
-     * delete file.
-     * @method delete
-     * @param object $request
-     * @return \Illuminate\Http\Response
-     *
-     * @OA\Delete(
-     * path="/api/storage/delete/{id}",
-     * summary="delete file",
-     * description="use token",
-     * operationId="delete",
-     * tags={"Storage"},
-     * security={ {"api_key": {} }},
-     * @OA\Parameter(
-     *    required=true,
-     *    name="id",
-     *    in="path",
-     *    description="id file",
-     *    example="1"
-     * ),
-     * @OA\Response(
-     *    response=200,
-     *    description="Success",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.delete.success"),
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=500,
-     *    description="Wrong",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.delete.fail")
-     *        )
-     *     )
-     * )
+     * clean trash
+     * @method GET
+     * @param Request $request
+     * @return Response
+     */
+    public function clean()
+    {
+        try {
+            DB::beginTransaction();
+            $user = auth()->user();
+            if (!$user) {
+                $user = $this->client->getClient();
+            }
+            // $files = $user->files;
+
+            // $ids = [];
+            // foreach ($files as $file) {
+            //     if (!Storage::get($file->path)) {
+            //         $file->delete();
+            //     }
+            // }
+            $trashs = $user->files()->onlyTrashed()->get();
+
+            foreach ($trashs as $trash) {
+                if (!Storage::get($trash->path) && !Storage::get('trash/' . $trash->hash)) {
+                    $ids[] = $trash->id;
+                    $trash->forceDelete();
+                }
+            }
+            // $idAfter = $files->whereNotIn('id', $ids)->pluck('id');
+            // $user->files()->sync($idAfter);
+            DB::commit();
+            return response()->json([
+                'message' => trans('res.clean.success'),
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.clean.fail'),
+            ], 500);
+        }
+    }
+    /**
+     * get trash
+     * @method GET
+     * @param Request $request
+     * @return Response
+     */
+    public function listtrash()
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                $user = $this->client->getClient();
+            }
+            $trashs = $user->files()->onlyTrashed()->get();
+            return response()->json($trashs);
+        } catch (Exception $e) {
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.getdata.fail'),
+            ], 500);
+        }
+    }
+    /**
+     * restore file
+     * @method GET
+     * @param Request $request
+     * @param integer $id
+     * @return Response
+     */
+    public function restore(Request $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+            $user = auth()->user();
+            if (!$user) {
+                $user = $this->client->getClient();
+            }
+            $trashs = $user->files()->onlyTrashed()->get();
+            $trash = $trashs->find($id);
+            if ($trash) {
+                $move = Storage::move('trash/' . $trash->hash, 'public/' . $trash->folder . '/' . $trash->hash);
+                $trash->restore();
+            } else {
+                return response()->json([
+                    'message' => trans('res.notfound'),
+                ], 404);
+            }
+            DB::commit();
+            return response()->json([
+                'message' => trans('res.restore.success'),
+            ]);
+
+        } catch (Exception $e) {
+            DB::rollback();
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.restore.fail'),
+            ], 500);
+        }
+    }
+    /**
+     * delete a file
+     * @method DELETE
+     * @param Request $request
+     * @param integer $id
+     * @return Response
      */
     public function delete(Request $request, $id)
     {
         $file = $this->filesystem->find($id);
         if (!$file) {
             return response()->json([
-                'message' => 'res.notfound.file',
+                'message' => trans('res.notfound'),
             ], 404);
         }
         try {
@@ -519,290 +458,75 @@ class FileManagerController extends Controller
             $file->delete();
             DB::commit();
             return response()->json([
-                'message' => 'res.delete.success',
+                'message' => trans('res.delete.success'),
             ]);
         } catch (Exception $e) {
             DB::rollback();
             Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
             return response()->json([
-                'message' => 'res.delete.fail',
+                'message' => trans('res.delete.fail'),
             ], 500);
         }
     }
     /**
-     * clear file.
-     * @method get
-     * @param object $request
-     * @return \Illuminate\Http\Response
-     * @OA\Get(
-     * path="/api/storage/clear",
-     * summary="clear file",
-     * description="use token",
-     * operationId="clear",
-     * tags={"Storage"},
-     * security={ {"api_key": {} }},
-     * @OA\Response(
-     *    response=200,
-     *    description="Success",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.clear.success"),
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=500,
-     *    description="Wrong",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.clear.fail")
-     *        )
-     *     )
-     * )
-     */
-    public function clear()
-    {
-        try {
-            DB::beginTransaction();
-            $user = auth()->user();
-            if(!$user){
-                $user = $this->client->getClient();
-            }
-            $files = $user->files;
-
-            $ids = [];
-            foreach ($files as $file) {
-                if (!Storage::get($file->path)) {
-                    $file->delete();
-                }
-            }
-            $trashs = $user->files()->onlyTrashed()->get();
-
-            foreach ($trashs as $trash) {
-                if (!Storage::get($trash->path) && !Storage::get('trash/' . $trash->hash)) {
-                    $ids[] = $trash->id;
-                    $trash->forceDelete();
-                }
-            }
-            $idAfter = $files->whereNotIn('id', $ids)->pluck('id');
-            $user->files()->sync($idAfter);
-            DB::commit();
-            return response()->json([
-                'message' => 'res.clear.success',
-            ]);
-        } catch (Exception $e) {
-            DB::rollback();
-            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
-            return response()->json([
-                'message' => 'res.clear.fail',
-            ], 500);
-        }
-    }
-    /**
-     * get trash
-     * @method get
-     * @return \Illuminate\Http\Response
-     * @OA\Get(
-     * path="/api/storage/trash",
-     * summary="trash file",
-     * description="use token",
-     * operationId="trash",
-     * tags={"Storage"},
-     * security={ {"api_key": {} }},
-     * @OA\Response(
-     *    response=200,
-     *    description="Success",
-     *    @OA\JsonContent(
-     *     oneOf={
-     *         @OA\Schema(ref="#/components/schemas/FileSystem"),
-     *     },
-     *     example={
-     *           {
-     *               "id": 1,
-     *               "name":
-     *               "image400x700.png",
-     *               "name":
-     *               "jx3m8NPBgy.png",
-     *               "type": "image",
-     *               "path": "public/image/jx3m8NPBgy.png",
-     *               "status": 0,
-     *               "created_at": "2022-09-29T17:03:15.000000Z",
-     *               "updated_at": "2022-09-29T17:13:16.000000Z",
-     *               "deleted_at": "2022-09-29T19:56:14.000000Z",
-     *               "pivot": {
-     *                   "user_id": 1,
-     *                   "file_id": 1
-     *               }
-     *           },
-     *           {
-     *               "id": 2,
-     *               "name":
-     *               "image2_400x700.png",
-     *               "name":
-     *               "jx3m8NPBgy.png",
-     *               "type": "image",
-     *               "path": "public/image/jx3m8NPBgy.png",
-     *               "status": 0,
-     *               "created_at": "2022-09-29T17:03:15.000000Z",
-     *               "updated_at": "2022-09-29T17:13:16.000000Z",
-     *               "deleted_at": "2022-09-29T19:56:14.000000Z",
-     *                "pivot": {
-     *                   "user_id": 1,
-     *                   "file_id": 2
-     *               }
-     *           }
-     *       }
-     *   ),
-     * ),
-     * @OA\Response(
-     *    response=500,
-     *    description="Wrong",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.getdata.fail")
-     *        )
-     *     )
-     * )
-     */
-    public function trash()
-    {
-        try {
-            $user = auth()->user();
-            if(!$user){
-                $user = $this->client->getClient();
-            }
-            $trashs = $user->files()->onlyTrashed()->get();
-            return response()->json($trashs);
-        } catch (Exception $e) {
-            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
-            return response()->json([
-                'message' => 'res.getdata.sfail',
-            ], 500);
-        }
-    }
-    /**
-     * restore file.
-     * @method get
-     * @param object $request
-     * @return \Illuminate\Http\Response
-     * @OA\Get(
-     * path="/api/storage/restore/{id}",
-     * summary="restore file",
-     * description="use token",
-     * operationId="restore",
-     * tags={"Storage"},
-     * security={ {"api_key": {} }},
-     * * @OA\Parameter(
-     *    required=true,
-     *    name="id",
-     *    in="path",
-     *    description="id file",
-     *    example="1"
-     * ),
-     * @OA\Response(
-     *    response=200,
-     *    description="Success",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.clear.success"),
-     *    ),
-     * ),
-     *  @OA\Response(
-     *    response=404,
-     *    description="Not Found",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.notfound.trash"),
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=500,
-     *    description="Wrong",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.clear.fail")
-     *        )
-     *     )
-     * ),
-     */
-    public function restore(Request $request, $id)
-    {
-        try {
-            DB::beginTransaction();
-            $user = auth()->user();
-            if(!$user){
-                $user = $this->client->getClient();
-            }
-            $trashs = $user->files()->onlyTrashed()->get();
-            $trash = $trashs->find($id);
-            if ($trash) {
-                $move = Storage::move('trash/' . $trash->hash, 'public/' . $trash->folder . '/' . $trash->hash);
-                $trash->restore();
-            } else {
-                return response()->json([
-                    'message' => 'res.notfound.trash',
-                ], 404);
-            }
-            DB::commit();
-            return response()->json([
-                'message' => 'res.restore.success',
-            ]);
-
-        } catch (Exception $e) {
-            DB::rollback();
-            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
-            return response()->json([
-                'message' => 'res.restore.fail',
-            ], 500);
-        }
-    }
-    /**
-     * @method delete
+     * force delete file
+     * @method DELETE
+     * @param Request $request
      * @param integer $id
-     * @return \Illuminate\Http\Response
-     * @OA\Delete(
-     * path="/api/storage/forcedelete/{id}",
-     * summary="forcedelete file",
-     * description="use token",
-     * operationId="forcedelete",
-     * tags={"Storage"},
-     * security={ {"api_key": {} }},
-     * @OA\Parameter(
-     *    required=true,
-     *    name="id",
-     *    in="path",
-     *    description="id file",
-     *    example="1"
-     * ),
-     *  @OA\Response(
-     *    response=200,
-     *    description="Not Found",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.forcedelete.success"),
-     *    ),
-     * ),
-     *  @OA\Response(
-     *    response=404,
-     *    description="Success",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.notfound.trash"),
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=500,
-     *    description="Wrong",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="res.forcedelete.fail")
-     *        )
-     *     )
-     * )
+     * @return Response
      */
-    public function forceDelete($id)
+    public function forcedelete($id)
     {
         try {
             DB::beginTransaction();
             $user = auth()->user();
-            if(!$user){
+            if (!$user) {
+                $user = $this->client->getClient();
+            }
+            $files = $user->files()->get();
+            $file = $files->find($id);
+            if (!$file) {
+                return response()->json([
+                    'message' => trans('res.notfound'),
+                ], 404);
+
+            }
+            if (Storage::get('trash/' . $file->hash)) {
+                Storage::delete('trash/' . $file->hash);
+            }
+            $file->forceDelete();
+            DB::commit();
+            return response()->json([
+                'message' => trans('res.forceDelete.success'),
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.forceDelete.fail'),
+            ], 500);
+        }
+    }
+    /**
+     * delete trash
+     * @method DELETE
+     * @param Request $request
+     * @param integer $id
+     * @return Response
+     */
+    public function deletetrash($id)
+    {
+        try {
+            DB::beginTransaction();
+            $user = auth()->user();
+            if (!$user) {
                 $user = $this->client->getClient();
             }
             $trashs = $user->files()->onlyTrashed()->get();
             $trash = $trashs->find($id);
             if (!$trash) {
                 return response()->json([
-                    'message' => 'res.notfound.trash',
+                    'message' => trans('res.notfound'),
                 ], 404);
 
             }
@@ -812,14 +536,240 @@ class FileManagerController extends Controller
             $trash->forceDelete();
             DB::commit();
             return response()->json([
-                'message' => 'res.forceDelete.success',
+                'message' => trans('res.delete.success'),
             ]);
         } catch (Exception $e) {
             DB::rollback();
             Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
             return response()->json([
-                'message' => 'res.delete.fail',
+                'message' => trans('res.delete.fail'),
             ], 500);
         }
     }
+    /**
+     * get list folder
+     * @method GET
+     * @param Request $request
+     * @return Response
+     */
+    public function listfolder()
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                $user = $this->client->getClient();
+            }
+            $files = $user->files;
+            $folders = [];
+            if ($files) {
+                foreach ($files as $file) {
+                    $folders[] = $file->folder;
+                }
+            }
+            return response()->json([
+                "message" => trans('res.getdata.success'),
+                "folders" => $folders,
+            ]);
+        } catch (Exception $e) {
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.getdata.fail'),
+            ], 500);
+        }
+    }
+    /**
+     * check folder exists
+     * @method POST
+     * @param Request $request
+     * @param string $name
+     * @return Response
+     */
+    public function existfolder(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                $user = $this->client->getClient();
+            }
+            $folderName = $request->name;
+            $folderExist = $user->files()->where('folder', $folderName)->get();
+            if (count($folderExist) > 0) {
+                return response()->json([
+                    "message" => trans('res.folderExists'),
+                ], 200);
+            } else {
+                return response()->json([
+                    "message" => trans('res.notfound'),
+                ], 404);
+            }
+        } catch (Exception $e) {
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.getdata.fail'),
+            ], 500);
+        }
+    }
+    /**
+     * create new folder
+     * @method POST
+     * @param Request $request
+     * @param string $name
+     * @return Response
+     */
+    public function createfolder(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                $user = $this->client->getClient();
+                $username = $user->name;
+            } else {
+                $username = $user->username;
+            }
+            $folderName = $request->name;
+            $folderExist = $user->files()->where('folder', $folderName)->get();
+            if (count($folderExist) > 0) {
+                return response()->json([
+                    "message" => trans('res.folderExists'),
+                ], 409);
+            } else {
+                $folder = Storage::disk('public')->createDirectory($username . "/" . $folderName);
+                return response()->json([
+                    'message' => trans('res.add.success'),
+                    'folder' => $folderName,
+                ]);
+            }
+        } catch (Exception $e) {
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.add.fail'),
+            ], 500);
+        }
+
+    }
+    /**
+     * rename a folder
+     * @method POST
+     * @param Request $request
+     * @param string $name
+     * @param string $newname
+     * @return Response
+     */
+    public function renamefolder(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                $user = $this->client->getClient();
+                $username = $user->name;
+            } else {
+                $username = $user->username;
+            }
+            $folderName = $request->name;
+            $newFoldername = $request->newname;
+            $folderExist = $user->files()->where('folder', $folderName)->get();
+            if (!count($folderExist) > 0) {
+                return response()->json([
+                    "message" => trans('res.notfound'),
+                ], 409);
+            } else {
+                foreach ($folderExist as $file) {
+                    $newpath = $username . "/" . $newFoldername . "/" . $file->name;
+                    Storage::disk('public')->move($file->path, $newpath);
+                    $newurl = Storage::disk('public')->url($newpath);
+                    $file->url = $newurl;
+                    $file->folder = $newFoldername;
+                    $file->path = $newpath;
+                    $file->save();
+                }
+                Storage::disk('public')->deleteDirectory($username . "/" . $folderName);
+                return response()->json([
+                    'message' => trans('res.rename.success'),
+                ]);
+            }
+        } catch (Exception $e) {
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.add.fail'),
+            ], 500);
+        }
+
+    }
+    /**
+     * get file of folder
+     * @method POST
+     * @param Request $request
+     * @param string $name
+     * @return Response
+     */
+    public function getfilefolder(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                $user = $this->client->getClient();
+                $username = $user->name;
+            } else {
+                $username = $user->username;
+            }
+            $folderName = $request->name;
+            $folderExist = $user->files()->where('folder', $folderName)->get();
+            if (!count($folderExist) > 0) {
+                return response()->json([
+                    "message" => trans('res.notfound'),
+                ], 404);
+            } else {
+                return response()->json([
+                    'message' => trans('res.getdata.success'),
+                    'files' => $folderExist,
+                ]);
+            }
+        } catch (Exception $e) {
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.getdata.fail'),
+            ], 500);
+        }
+    }
+    /**
+     * delte a folder
+     * @method DELETE
+     * @param Request $request
+     * @param string $name
+     * @return Response
+     */
+    public function deletefolder(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                $user = $this->client->getClient();
+                $username = $user->name;
+            } else {
+                $username = $user->username;
+            }
+            $folderName = $request->name;
+            $folderExist = $user->files()->where('folder', $folderName)->get();
+            if (count($folderExist) > 0) {
+                return response()->json([
+                    "message" => trans('res.notfound'),
+                ], 404);
+            } else {
+                foreach ($folderExist as $file) {
+                    Storage::disk('public')->delete($file->path);
+                    $file->forceDelete();
+                }
+                Storage::disk('public')->deleteDirectory($username . "/" . $folderName);
+                return response()->json([
+                    'message' => trans('res.delete.success'),
+                ]);
+            }
+        } catch (Exception $e) {
+            Log::error('Message :' . $e->getMessage() . '--line: ' . $e->getLine());
+            return response()->json([
+                'message' => trans('res.delete.fail'),
+            ], 500);
+        }
+    }
+
 }

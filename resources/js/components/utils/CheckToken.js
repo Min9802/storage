@@ -7,7 +7,9 @@ import { connect, useDispatch } from "react-redux";
 import * as actions from "../store/actions";
 import reduxStore from "../store/reducers/redux";
 import { CheckRef } from "../utils";
+import { useIntl } from "react-intl";
 function CheckToken(token) {
+    const intl = useIntl();
     const prevState = CheckRef.CheckRender();
     const [loading, setLoading] = useState(true);
     const [notify, setNotify] = useState(false);
@@ -77,7 +79,11 @@ function CheckToken(token) {
             if (!accessToken) {
                 const notify = {
                     title: "res.title.error",
-                    text: ["res.auth.token.invalid"],
+                    text: [
+                        intl.formatMessage({
+                            id: "res.auth.token.invalid",
+                        }),
+                    ],
                     icon: "error",
                     confirmText: "common.ok",
                     confirm: () => {
@@ -94,7 +100,11 @@ function CheckToken(token) {
                 if (timeLeft <= 0) {
                     const notify = {
                         title: "res.title.error",
-                        text: ["res.auth.token.invalid"],
+                        text: [
+                            intl.formatMessage({
+                                id: "res.auth.token.invalid",
+                            }),
+                        ],
                         icon: "error",
                         confirmText: "common.ok",
                         confirm: () => {
@@ -116,7 +126,11 @@ function CheckToken(token) {
         } catch (err) {
             const notify = {
                 title: "res.title.error",
-                text: ["res.serverError"],
+                text: [
+                    intl.formatMessage({
+                        id: "res.serverError",
+                    }),
+                ],
                 icon: "error",
                 confirmText: "common.ok",
                 confirm: () => {
@@ -198,7 +212,11 @@ function CheckToken(token) {
         } catch (err) {
             const notify = {
                 title: "res.title.error",
-                text: ["res.auth.token.invalid"],
+                text: [
+                    intl.formatMessage({
+                        id: "res.auth.token.invalid",
+                    }),
+                ],
                 icon: "error",
                 confirmText: "common.ok",
                 confirm: () => {
@@ -216,7 +234,11 @@ function CheckToken(token) {
     const isLoged = () => {
         const notify = {
             title: "res.title.info",
-            text: ["res.logged"],
+            text: [
+                intl.formatMessage({
+                    id: "res.logged",
+                }),
+            ],
             icon: "info",
             confirmText: "common.ok",
             confirm: () => {
