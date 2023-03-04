@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\FileManagerController;
+use App\Http\Controllers\FolderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,32 +39,32 @@ Route::group([
     Route::group([
         'prefix' => 'file',
     ], function () {
-        Route::get('list', [FileManagerController::class, 'list']);
-        Route::post('get', [FileManagerController::class, 'get']);
-        Route::post('rename', [FileManagerController::class, 'rename']);
-        Route::post('move', [FileManagerController::class, 'move']);
-        Route::post('upload', [FileManagerController::class, 'upload']);
-        Route::post('update/{id}', [FileManagerController::class, 'update']);
-        Route::delete('delete/{id}', [FileManagerController::class, 'delete']);
+        Route::get('list', [FileController::class, 'list']);
+        Route::post('get', [FileController::class, 'get']);
+        Route::post('rename', [FileController::class, 'rename']);
+        Route::post('move', [FileController::class, 'move']);
+        Route::post('upload', [FileController::class, 'upload']);
+        Route::post('update/{id}', [FileController::class, 'update']);
+        Route::delete('delete/{id}', [FileController::class, 'delete']);
         Route::delete('forcedelete/{id}', [FileManagerController::class, 'forcedelete']);
-    });
-    Route::group([
-        'prefix' => 'folder',
-    ], function () {
-        Route::get('list', [FileManagerController::class, 'listfolder']);
-        Route::post('create', [FileManagerController::class, 'createfolder']);
-        Route::post('exist', [FileManagerController::class, 'existfolder']);
-        Route::post('rename', [FileManagerController::class, 'renamefolder']);
-        Route::post('getfile', [FileManagerController::class, 'getfilefolder']);
-        Route::delete('delete', [FileManagerController::class, 'deletefolder']);
     });
     Route::group([
         'prefix' => 'trash',
     ], function () {
-        Route::get('list', [FileManagerController::class, 'listtrash']);
-        Route::get('clean', [FileManagerController::class, 'clean']);
-        Route::delete('delete/{id}', [FileManagerController::class, 'deletetrash']);
-        Route::get('restore/{id}', [FileManagerController::class, 'restore']);
+        Route::get('list', [FileController::class, 'listtrash']);
+        Route::get('clean', [FileController::class, 'clean']);
+        Route::delete('delete/{id}', [FileController::class, 'deletetrash']);
+        Route::get('restore/{id}', [FileController::class, 'restore']);
+    });
+    Route::group([
+        'prefix' => 'folder',
+    ], function () {
+        Route::get('list', [FolderController::class, 'list']);
+        Route::post('create', [FolderController::class, 'create']);
+        Route::post('exist', [FolderController::class, 'exist']);
+        Route::post('rename', [FolderController::class, 'rename']);
+        Route::post('getfile', [FolderController::class, 'getfile']);
+        Route::delete('delete', [FolderController::class, 'delete']);
     });
 
 });
@@ -73,32 +75,33 @@ Route::group([
     Route::group([
         'prefix' => 'file',
     ], function () {
-        Route::get('list', [FileManagerController::class, 'list']);
-        Route::post('get', [FileManagerController::class, 'get']);
-        Route::post('rename', [FileManagerController::class, 'rename']);
-        Route::post('move', [FileManagerController::class, 'move']);
-        Route::post('upload', [FileManagerController::class, 'upload']);
-        Route::post('update/{id}', [FileManagerController::class, 'update']);
-        Route::delete('delete/{id}', [FileManagerController::class, 'delete']);
-        Route::delete('forcedelete/{id}', [FileManagerController::class, 'forcedelete']);
-    });
-    Route::group([
-        'prefix' => 'folder',
-    ], function () {
-        Route::get('list', [FileManagerController::class, 'listfolder']);
-        Route::post('create', [FileManagerController::class, 'createfolder']);
-        Route::post('exist', [FileManagerController::class, 'existfolder']);
-        Route::post('rename', [FileManagerController::class, 'renamefolder']);
-        Route::post('getfile', [FileManagerController::class, 'getfilefolder']);
-        Route::delete('delete', [FileManagerController::class, 'deletefolder']);
+        Route::get('list', [FileController::class, 'list']);
+        Route::post('get', [FileController::class, 'get']);
+        Route::post('rename', [FileController::class, 'rename']);
+        Route::post('move', [FileController::class, 'move']);
+        Route::post('upload', [FileController::class, 'upload']);
+        Route::post('update/{id}', [FileController::class, 'update']);
+        Route::delete('delete/{id}', [FileController::class, 'delete']);
+        Route::delete('forcedelete/{id}', [FileController::class, 'forcedelete']);
     });
     Route::group([
         'prefix' => 'trash',
     ], function () {
-        Route::get('list', [FileManagerController::class, 'listtrash']);
-        Route::get('clean', [FileManagerController::class, 'clean']);
-        Route::delete('delete/{id}', [FileManagerController::class, 'deletetrash']);
-        Route::get('restore/{id}', [FileManagerController::class, 'restore']);
+        Route::get('list', [FileController::class, 'listtrash']);
+        Route::get('clean', [FileController::class, 'clean']);
+        Route::delete('delete/{id}', [FileController::class, 'deletetrash']);
+        Route::get('restore/{id}', [FileController::class, 'restore']);
+    });
+
+    Route::group([
+        'prefix' => 'folder',
+    ], function () {
+        Route::get('list', [FolderController::class, 'list']);
+        Route::post('create', [FolderController::class, 'create']);
+        Route::post('exist', [FolderController::class, 'exist']);
+        Route::post('rename', [FolderController::class, 'rename']);
+        Route::post('getfile', [FolderController::class, 'getfile']);
+        Route::delete('delete', [FolderController::class, 'delete']);
     });
 
 });

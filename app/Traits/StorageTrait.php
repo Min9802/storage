@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 trait StorageTrait
 {
-    public function uploadFile($path = null, $file, $name = null)
+    public function uploadFile($path = null, $file)
     {
         $user = auth()->user();
         if(!$user){
@@ -17,11 +17,9 @@ trait StorageTrait
         }else{
             $username = $user->username;
         }
-        if(!$name){
-            $name = $file->getClientOriginalName();
-            $nameHash = Str::random(20) . '.' . $file->getClientOriginalExtension();
-        }
-        $pathFile =  Storage::disk('public')->putFileAs($username.'/'.$path, $file, $name);
+        $name = $file->getClientOriginalName();
+        $nameHash = Str::random(20) . '.' . $file->getClientOriginalExtension();
+        $pathFile =  Storage::disk('public')->putFileAs($username.'/'.$path, $file, $nameHash);
         $type = $file->getMimeType();
         // $filePath = $file->storeAs('/public/'.$folder, $fileNameHash);
         // $type = $file->getMimeType();
