@@ -107,7 +107,7 @@ class FileController extends Controller
         if (!$user) {
             $user = $this->client->getClient();
         }
-        $path = $request->path;
+        $folder = $request->folder;
         $file = $request->file('file');
         if (!$file) {
             return response()->json([
@@ -116,26 +116,26 @@ class FileController extends Controller
         }
         try {
             DB::beginTransaction();
-            if (!$path) {
+            if (!$folder) {
                 $extension = $file->extension();
                 $imageExtensions = ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'svg', 'svgz', 'cgm', 'djv', 'djvu', 'ico', 'ief', 'jpe', 'pbm', 'pgm', 'pnm', 'ppm', 'ras', 'rgb', 'tif', 'tiff', 'wbmp', 'xbm', 'xpm', 'xwd'];
                 $videoExtensions = ["webm", "mp4", "ogv"];
                 $audioExtensions = ['mp3'];
                 $debExtensions = ['deb'];
                 if (collect($imageExtensions)->contains($extension)) {
-                    $path = "image";
+                    $folder = "image";
                 }
                 if (collect($videoExtensions)->contains($extension)) {
-                    $path = "video";
+                    $folder = "video";
                 }
                 if (collect($audioExtensions)->contains($extension)) {
-                    $path = "audio";
+                    $folder = "audio";
                 }
                 if (collect($debExtensions)->contains($extension)) {
-                    $path = "deb";
+                    $folder = "deb";
                 }
             }
-            $fileInfo = $this->uploadFile($path, $file);
+            $fileInfo = $this->uploadFile($folder, $file);
             $fileupload = [
                 'folder' => $fileInfo['folder'],
                 'type' => $fileInfo['type'],
@@ -183,14 +183,13 @@ class FileController extends Controller
                 $user = $this->client->getClient();
             }
             $file = $request->file('file');
-            $path = $request->path;
+            $folder = $request->folder;
             $fileChange = $this->filesystem->find($id);
             if (!$fileChange) {
                 return response()->json([
                     'message' => trans('res.notfound'),
                 ], 404);
             }
-            $folder = $fileChange->folder;
             $fileInfo = $this->uploadFile($folder, $file);
             if ($fileInfo) {
                 Storage::disk('public')->delete($fileChange->path);
@@ -287,7 +286,7 @@ class FileController extends Controller
                 $username = $user->username;
             }
             $path = $request->path;
-            $newpath = $request->newpath;
+            $newfolder = $request->newfolder;
             $file = $user->files()->where('path', $path)->first();
             if(!$file){
                 return response()->json([
@@ -296,7 +295,7 @@ class FileController extends Controller
             }else{
                 $folder = $file->folder;
                 $filename = $file->name;
-                $newpath = $username . '/' . $newpath . '/' . $filename;
+                $newpath = $username . '/' . $newfolder . '/' . $filename;
                 $moved = Storage::disk('public')->copy($path, $newpath );
                 if($moved){
                     Storage::disk('public')->delete($path);

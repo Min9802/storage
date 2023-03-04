@@ -27,7 +27,7 @@ class UploadFileRequest extends FormRequest
     {
         return [
             'file' => 'required',
-            'path' => 'required',
+            'folder' => 'required',
         ];
     }
     public function failedValidation(Validator $validator)

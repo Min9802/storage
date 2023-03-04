@@ -26,7 +26,7 @@ class MoveFileRequest extends FormRequest
     {
         return [
             'path' => 'required',
-            'newpath' => 'required',
+            'newfolder' => 'required',
         ];
     }
     public function failedValidation(Validator $validator)
