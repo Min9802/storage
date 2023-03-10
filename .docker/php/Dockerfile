@@ -1,6 +1,6 @@
 FROM php:8.1-fpm
 
-LABEL maintainer="Min (hotro.min-services@gmail.com)"
+LABEL maintainer="Min (hieumin9802@gmail.com)"
 # Arguments defined in docker-compose.yml
 ARG user
 ARG uid
